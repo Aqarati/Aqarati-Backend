@@ -43,7 +43,7 @@ public class AuthService {
 
     public String loginUser(AuthRequest authRequest) throws BadCredentialsException {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail().toLowerCase(), authRequest.getPassword()));
-        var user=userRepository.findByEmail(authRequest.getEmail()).get();
+        var user=userRepository.findByEmail(authRequest.getEmail().toLowerCase()).get();
         return jwtTokenUtil.createToken(user);
     }
 }
