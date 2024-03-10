@@ -21,6 +21,7 @@ public class UserApp implements UserDetails {
     @MongoId
     private String id;
     private String email;
+    private String uname;
     @JsonIgnore
     private String password;
     private String firstName;
@@ -32,14 +33,15 @@ public class UserApp implements UserDetails {
         this.createdDate = new Date();
     }
 
-    public UserApp(String email, String password) {
+    public UserApp(String email, String password,String uname) {
         this();
         this.email = email;
         this.password = password;
+        this.uname = uname;
     }
 
-    public UserApp(String email, String password, String firstName, String lastName) {
-        this(email, password);
+    public UserApp(String email, String password, String uname, String firstName, String lastName) {
+        this(email, password, uname);
         this.firstName = firstName;
         this.lastName = lastName;
     }

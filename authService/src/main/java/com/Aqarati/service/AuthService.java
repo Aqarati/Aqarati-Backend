@@ -32,9 +32,14 @@ public class AuthService {
     }
 
     public String registerUser(UserApp user) throws UserAlreadyExists {
-        var x=userRepository.findByEmail(user.getEmail());
+        var x=userRepository.findByEmail(user.getEmail().toLowerCase());
+        var x1=userRepository.findByUname(user.getUname().toLowerCase());
+        System.out.println(user);
         if(x.isPresent()){
             throw new UserAlreadyExists("Email address already exists");
+        }
+        if(x1.isPresent()){
+            throw new UserAlreadyExists("username already exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);

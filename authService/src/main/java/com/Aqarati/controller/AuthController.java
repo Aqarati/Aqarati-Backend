@@ -26,7 +26,7 @@ public class AuthController {
     private final AuthService authService;
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> userRegister(@RequestBody @Valid AuthRequest authRequest) throws UserAlreadyExists {
-        var user=new UserApp(authRequest.getEmail().toLowerCase(), authRequest.getPassword());
+        var user=new UserApp(authRequest.getEmail().toLowerCase(), authRequest.getPassword(),authRequest.getUsername().toLowerCase());
         var token=authService.registerUser(user);
         var res=AuthResponse.builder().
                 message("User registration successful").

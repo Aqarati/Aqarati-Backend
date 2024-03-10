@@ -15,4 +15,5 @@ public class AuthRequest {
             flags = Pattern.Flag.CASE_INSENSITIVE,message = "Email Invalid")
     private String email;
     private String password;
+    private String username;
 }
