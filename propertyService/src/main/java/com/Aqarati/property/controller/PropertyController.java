@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import com.Aqarati.property.exception.InvalidJwtAuthenticationException;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/property")
 @RequiredArgsConstructor
@@ -18,6 +20,9 @@ public class PropertyController {
 
 //        return propertyService.createProduct(request,productRequest,siteId);
     }
-    
+    @GetMapping({"/",""})
+    public List<Property> getAllProperty(){
+        return propertyService.getAll();
+    }
 
 }

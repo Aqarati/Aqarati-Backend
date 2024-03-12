@@ -11,6 +11,8 @@ import com.Aqarati.property.model.Site;
 import com.Aqarati.property.request.CreatePropertyRequest;
 import com.Aqarati.property.util.JwtTokenUtil;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PropertyService {
@@ -19,6 +21,9 @@ public class PropertyService {
     private final SiteRepository siteRepository;
     private final JwtTokenUtil jwtTokenUtil;
 
+    public List<Property> getAll(){
+      return propertyRepository.findAll();
+    }
 //    public Property createProduct(HttpServletRequest request, CreatePropertyRequest productRequest, Long siteId) throws InvalidJwtAuthenticationException {
 //        var token = jwtTokenUtil.resolveToken(request);
 //        var userId = jwtTokenUtil.getUserId(token);
