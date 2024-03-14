@@ -1,5 +1,6 @@
 package com.Aqarati.controller;
 
+import com.Aqarati.exception.RequestMissingInformation;
 import com.Aqarati.exception.UserAlreadyExists;
 import com.Aqarati.model.UserApp;
 import com.Aqarati.request.AuthRequest;
@@ -25,7 +26,11 @@ public class AuthController {
 
     private final AuthService authService;
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponse> userRegister(@RequestBody @Valid AuthRequest authRequest) throws UserAlreadyExists {
+    public ResponseEntity<AuthResponse> userRegister(@RequestBody @Valid AuthRequest authRequest) throws UserAlreadyExists, RequestMissingInformation {
+        if(authRequest.getUsername() ==null || authRequest.getEmail()==null ||authRequest.getPassword() ==null
+        ){
+            throw new RequestMissingInformation("request missing inofrmation");
+        }
         var user=new UserApp(authRequest.getEmail().toLowerCase(), authRequest.getPassword(),authRequest.getUsername().toLowerCase());
         var token=authService.registerUser(user);
         var res=AuthResponse.builder().

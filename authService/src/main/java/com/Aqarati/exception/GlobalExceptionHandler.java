@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(UserAlreadyExists.class)
     public ResponseEntity<ExceptionResponse> handleUserAlreadyExists(UserAlreadyExists ex) {
-        final String message="The email address you provided is already registered. Please use a different email address.";
+        final String message="The user with this property is already registered. Please use a different property.";
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ExceptionResponse(ex.getMessage(),message));
     }
     @ExceptionHandler(BadCredentialsException.class)
@@ -58,6 +58,11 @@ public class GlobalExceptionHandler {
             errorResponse.addGlobalError(message);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+    @ExceptionHandler(RequestMissingInformation.class)
+    public ResponseEntity<ExceptionResponse> handleRequestMissingInformation(RequestMissingInformation ex) {
+        final String message="The request is missing information.";
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ExceptionResponse(ex.getMessage(),message));
     }
 
 
