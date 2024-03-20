@@ -8,6 +8,14 @@ services:
       - "8761:8761"
     networks:
       - aqarati-network
+  gateway:
+    hostname: gateway
+    image: ahmd66699/aqarati-gateway
+    ports:
+      - "8888:8888"
+    networks:
+      - aqarati-network
+
   auth-service:
     image: ahmd66699/aqarati-auth-service
     ports:

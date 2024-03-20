@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="authService" />
         <module name="propertyService" />
+        <module name="gateway" />
         <module name="ServiceDiscovery" />
       </profile>
     </annotationProcessing>
@@ -17,6 +18,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ServiceDiscovery" options="-parameters" />
       <module name="authService" options="-parameters" />
+      <module name="gateway" options="-parameters" />
       <module name="propertyService" options="-parameters" />
     </option>
   </component>
