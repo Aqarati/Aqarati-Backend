@@ -9,11 +9,13 @@
         <outputRelativeToContentRoot value="true" />
         <module name="authService" />
         <module name="propertyService" />
+        <module name="ServiceDiscovery" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="ServiceDiscovery" options="-parameters" />
       <module name="authService" options="-parameters" />
       <module name="propertyService" options="-parameters" />
     </option>
