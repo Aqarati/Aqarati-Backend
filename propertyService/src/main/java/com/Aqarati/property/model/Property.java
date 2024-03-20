@@ -32,6 +32,9 @@ public class Property {
     @Column(name = "img_url")
     private String imgUrl;
 
+    @Column(name = "user_id",nullable = false)
+    private String userId;
+
     @Column(name = "created_time")
     @JsonIgnore
     @Builder.Default
