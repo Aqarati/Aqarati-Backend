@@ -3,14 +3,14 @@ version: '3'
 services:
   eureka-server:
     hostname: eureka-server
-    image: ahmd66699/aqarati-service-discovery
+    image: ahmd66699/aqarati-service-discovery:v0.01
     ports:
       - "8761:8761"
     networks:
       - aqarati-network
   gateway:
     hostname: gateway
-    image: ahmd66699/aqarati-gateway
+    image: ahmd66699/aqarati-gateway:v0.01
     ports:
       - "8888:8888"
     networks:
@@ -23,14 +23,19 @@ services:
       - aqarati-network
 
   auth-service:
-    image: ahmd66699/aqarati-auth-service
+    image: ahmd66699/aqarati-auth-service:v0.01
     ports:
       - "0:8443"
     networks:
       - aqarati-network
-
+  user-service:
+    image: ahmd66699/aqarati-user-service:v0.01
+    ports:
+      - "0:8444"
+    networks:
+      - aqarati-network
   propery-service:
-    image: ahmd66699/aqarati-property-service
+    image: ahmd66699/aqarati-property-service:v0.01
     ports:
       - "0:8666"
     networks:
