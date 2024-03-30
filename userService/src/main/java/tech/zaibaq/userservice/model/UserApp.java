@@ -17,6 +17,7 @@ public class UserApp  {
     @MongoId
     private String id;
     private String email;
+    private String uname;
     @JsonIgnore
     private String password;
     private String firstName;
