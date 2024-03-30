@@ -38,6 +38,7 @@ public class UserService {
                             lastName((userUpdateRequest.getLastName()!=null)?userUpdateRequest.getLastName():x.getLastName()).
                             createdDate(x.getCreatedDate()).
                             email(x.getEmail()).
+                            uname(x.getUname()).
                             password(x.getPassword()).
                             build();
             return userRepository.save(u);
