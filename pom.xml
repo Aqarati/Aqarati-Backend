@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.aqarati</groupId>
+    <artifactId>aqarati-app</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <properties>
+        <jkube.skip.build.pom>true</jkube.skip.build.pom>
+    </properties>
+
+    <modules>
+        <module>serviceDiscovery</module>
+        <module>gateway</module>
+        <module>authService</module>
+        <module>propertyService</module>
+        <module>userService</module>
+    </modules>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.jkube</groupId>
+                <artifactId>kubernetes-maven-plugin</artifactId>
+                <version>1.16.0</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>
