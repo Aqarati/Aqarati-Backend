@@ -12,6 +12,8 @@
         <option value="$PROJECT_DIR$/propertyService/pom.xml" />
         <option value="$PROJECT_DIR$/serviceDiscovery/pom.xml" />
         <option value="$PROJECT_DIR$/gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/userService/pom.xml" />
       </list>
     </option>
     <option name="workspaceImportForciblyTurnedOn" value="true" />
