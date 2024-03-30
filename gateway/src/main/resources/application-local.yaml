@@ -1,0 +1,46 @@
+
+# Uncomment the appropriate line based on the deployment environment
+# Docker
+# eureka.client.serviceUrl.defaultZone: ${EURUKA_SERVER_HOST:http://eureka-server:8761/eureka}
+# Kubernetes
+# eureka.client.serviceUrl.defaultZone: ${EURUKA_SERVER_HOST:http://service-discovery.default.svc.cluster.local:8761}
+spring:
+  application:
+    name: gateway
+
+  cloud:
+    gateway:
+#      globalcors:
+#        corsConfigurations:
+#          '[/**]':
+#            allowedOrigins: "*"
+#            allowedMethods: "*"
+      routes:
+        - id: auth-service_route
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+
+        - id: property-service_route
+          uri: lb://property-service
+          predicates:
+            - Path=/property/**
+
+        - id: user-service_route
+          uri: lb://user-service
+          predicates:
+            - Path=/user/**
+    discovery:
+      locator:
+        enabled: true
+        lower-case-service-id: true
+eureka:
+  client:
+    instance:
+      preferIpAddress: true
+    serviceUrl:
+      #defaultZone: ${EURUKA_SERVER_HOST:http://eureka-server:8761/eureka}
+      defaultZone: ${EURUKA_SERVER_HOST:http://localhost:8761/eureka}
+
+server:
+  port: 8888
