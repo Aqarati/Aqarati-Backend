@@ -16,6 +16,7 @@
         <module>authService</module>
         <module>propertyService</module>
         <module>userService</module>
+        <module>imageService</module>
     </modules>
     <build>
         <plugins>

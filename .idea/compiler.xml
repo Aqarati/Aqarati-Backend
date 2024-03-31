@@ -10,6 +10,7 @@
         <module name="authService" />
         <module name="propertyService" />
         <module name="gateway" />
+        <module name="imageService" />
         <module name="ServiceDiscovery" />
         <module name="userService" />
       </profile>
@@ -20,6 +21,7 @@
       <module name="ServiceDiscovery" options="-parameters" />
       <module name="authService" options="-parameters" />
       <module name="gateway" options="-parameters" />
+      <module name="imageService" options="-parameters" />
       <module name="propertyService" options="-parameters" />
       <module name="userService" options="-parameters" />
     </option>
