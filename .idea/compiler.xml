@@ -7,10 +7,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="authService" />
         <module name="propertyService" />
-        <module name="gateway" />
         <module name="imageService" />
+        <module name="documentService" />
+        <module name="authService" />
+        <module name="gateway" />
         <module name="ServiceDiscovery" />
         <module name="userService" />
       </profile>
@@ -20,6 +21,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ServiceDiscovery" options="-parameters" />
       <module name="authService" options="-parameters" />
+      <module name="documentService" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="imageService" options="-parameters" />
       <module name="propertyService" options="-parameters" />
