@@ -34,7 +34,7 @@ services:
       - "0:8444"
     networks:
       - aqarati-network
-  propery-service:
+  property-service:
     image: ahmd66699/aqarati-property-service:v0.01
     ports:
       - "0:8666"
