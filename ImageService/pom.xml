@@ -11,11 +11,13 @@
     <groupId>com.ahmadah</groupId>
     <artifactId>imageService</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ImageService</name>
-    <description>ImageService</description>
+    <name>imageService</name>
+    <description>imageService</description>
     <properties>
         <java.version>21</java.version>
         <spring-cloud.version>2023.0.1</spring-cloud.version>
+        <jkube.version>1.16-SNAPSHOT</jkube.version>
+        <jkube.generator.name>ahmd66699/aqarati-${project.name}:v0.01</jkube.generator.name>
     </properties>
     <dependencies>
         <dependency>
