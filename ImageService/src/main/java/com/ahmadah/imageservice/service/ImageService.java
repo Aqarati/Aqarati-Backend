@@ -48,7 +48,7 @@ public class ImageService {
             File file = convertMultiPartFileToFile(image);
             amazonS3.putObject(new PutObjectRequest(bucketName, key,  file));
             file.delete(); // Delete the temporary file after uploading
-            return "https://aqarati-app.s3.me-south-1.amazonaws.com/"+folderName+"/"+imageName;
+            return "https://aqarati-app.s3.me-south-1.amazonaws.com/"+folderName+"/"+imageName+ext;
         } catch (IOException | SdkClientException e) {
             e.printStackTrace();
             return null;
