@@ -1,0 +1,14 @@
+{
+  "index_patterns": ["property*"],
+  "mappings": {
+    "properties": {
+      "id": {"type": "long"},
+      "name": {"type": "text"},
+      "description": {"type": "text"},
+      "price": {"type": "double"},
+      "img_url": {"type": "text"},
+      "user_id": {"type": "text"},
+      "created_time": {"type": "date"}
+    }
+  }
+}
