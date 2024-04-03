@@ -30,7 +30,7 @@ public class ImageService {
 
     private final List<String> ALLOWED_IMAGE_TYPES = Arrays.asList("image/jpeg", "image/png");
 
-    public String putObject(MultipartFile image,String imageName)throws InvalidImageException{
+    public String putObject(MultipartFile image,String folderName,String imageName)throws InvalidImageException{
         if (image.isEmpty()) {
             throw new InvalidImageException("Please select a file to upload");
         }
@@ -43,14 +43,12 @@ public class ImageService {
             throw new InvalidImageException("Only JPEG and PNG images are allowed");
         }
         try {
-            String folderName = "image/";
             String ext="."+image.getContentType().substring(6);
-            String key =folderName+imageName+ext;
-            System.out.println(key);
+            String key =folderName+"/"+imageName+ext;
             File file = convertMultiPartFileToFile(image);
             amazonS3.putObject(new PutObjectRequest(bucketName, key,  file));
             file.delete(); // Delete the temporary file after uploading
-            return "done";
+            return "https://aqarati-app.s3.me-south-1.amazonaws.com/"+folderName+"/"+imageName;
         } catch (IOException | SdkClientException e) {
             e.printStackTrace();
             return null;
@@ -58,6 +56,7 @@ public class ImageService {
 
     };
 
+    //Return the Presigned Url for non public object
     public String getObject(String objectName){
         try {
             Date expiration = new Date(System.currentTimeMillis() + 3600 * 1000); // URL expiration time (1 hour)

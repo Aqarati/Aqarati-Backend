@@ -15,7 +15,7 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping("/image/uploud")
-    public String  uploadImage(@RequestParam("file") MultipartFile image,@RequestParam("name") String imageName) throws InvalidImageException {
-        return imageService.putObject(image,imageName);
+    public String  uploadImage(@RequestParam("file") MultipartFile image,@RequestParam("folder") String folderName,@RequestParam("name") String imageName) throws InvalidImageException {
+        return imageService.putObject(image,folderName,imageName);
     }
 }

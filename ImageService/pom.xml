@@ -11,7 +11,7 @@
     <groupId>com.ahmadah</groupId>
     <artifactId>imageService</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>imageService</name>
+    <name>image-service</name>
     <description>imageService</description>
     <properties>
         <java.version>21</java.version>
