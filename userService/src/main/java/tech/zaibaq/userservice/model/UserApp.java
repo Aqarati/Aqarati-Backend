@@ -22,6 +22,7 @@ public class UserApp  {
     private String password;
     private String firstName;
     private String lastName;
+    private String imageUrl;
     @JsonIgnore
     private Date createdDate;
 
