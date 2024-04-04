@@ -17,6 +17,7 @@
         <module>propertyService</module>
         <module>userService</module>
         <module>imageService</module>
+        <module>documentService</module>
     </modules>
     <build>
         <plugins>
