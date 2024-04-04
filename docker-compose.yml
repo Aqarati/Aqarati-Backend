@@ -40,6 +40,12 @@ services:
       - "0:8666"
     networks:
       - aqarati-network
+  document-service:
+    image: ahmd66699/aqarati-document-service:v0.01
+    ports:
+      - "0:8665"
+    networks:
+      - aqarati-network
   image-service:
     image: ahmd66699/aqarati-image-service:v0.01
     ports:
