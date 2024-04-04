@@ -22,8 +22,6 @@ public class JwtTokenUtil {
     @Value("${jwt.expiration}")
     private long validityInMilliseconds;
 
-
-
     public String getEmail(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
@@ -33,9 +31,8 @@ public class JwtTokenUtil {
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7, bearerToken.length());
         }
-        throw new InvalidJwtAuthenticationException("Cnat Reslove Token");
+        throw new InvalidJwtAuthenticationException("Can`t Reslove Token");
     }
-
 
     public boolean validateToken(String token) {
         try {

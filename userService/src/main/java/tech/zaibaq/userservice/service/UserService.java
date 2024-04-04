@@ -26,7 +26,7 @@ public class UserService {
             var x = userRepository.findByEmail(userEmail).orElseThrow();
             return x;
         }
-        return null;
+        throw new InvalidJwtAuthenticationException("invalid JWT");
     }
 
     public UserApp updateUser(HttpServletRequest request, UserUpdateRequest userUpdateRequest) throws InvalidJwtAuthenticationException {
@@ -34,18 +34,10 @@ public class UserService {
         var userEmail = jwtTokenUtil.getEmail(token);
         if (jwtTokenUtil.validateToken(token)) {
             var x = userRepository.findByEmail(userEmail).orElseThrow();
-            //prevent user for change Password or email or id
-            UserApp u = UserApp.builder().
-                            id(x.getId()).
-                            firstName((userUpdateRequest.getFirstName()!=null)?userUpdateRequest.getFirstName():x.getFirstName()).
-                            lastName((userUpdateRequest.getLastName()!=null)?userUpdateRequest.getLastName():x.getLastName()).
-                            createdDate(x.getCreatedDate()).
-                            email(x.getEmail()).
-                            uname(x.getUname()).
-                            password(x.getPassword()).
-                            imageUrl(x.getImageUrl()).
-                            build();
-            return userRepository.save(u);
+            x.setFirstName(userUpdateRequest.getFirstName());
+            x.setLastName(userUpdateRequest.getLastName());
+            x.setPhoneNumber(userUpdateRequest.getPhoneNumber());
+            return userRepository.save(x);
         }
         throw new InvalidJwtAuthenticationException("invalid JWT");
     }
@@ -55,52 +47,11 @@ public class UserService {
         if (jwtTokenUtil.validateToken(token)) {
             var x = userRepository.findByEmail(userEmail).orElseThrow();
             var imageUrl =imageServiceClient.uploadImage(file,"profile-image",x.getId());
-            //prevent user for change Password or email or id
-            UserApp u = UserApp.builder().
-                    id(x.getId()).
-                    firstName(x.getFirstName()).
-                    lastName(x.getLastName()).
-                    createdDate(x.getCreatedDate()).
-                    email(x.getEmail()).
-                    uname(x.getUname()).
-                    password(x.getPassword()).
-                    imageUrl(imageUrl).
-                    build();
-            return userRepository.save(u);
+            x.setImageUrl(imageUrl);
+            return userRepository.save(x);
         }
         throw new InvalidJwtAuthenticationException("invalid JWT");
     }
 
-    //TODO :handle user update passwrod
-    //TODO :User passwrd update request --> include the currnt Password and new Paasword (create new Function for it).
-    public UserApp updateUser(HttpServletRequest request,UserApp user)  {
-//        var token=jwtTokenUtil.resolveToken(request);
-//        var userEmail = jwtTokenUtil.getEmail(token);
-//        //let user  change Password email
-//        if (jwtTokenUtil.validateToken(token)) {
-//            var x = userRepository.findByEmail(userEmail).orElseThrow();
-//            //prevent user for change Password or email or id
-//            UserApp u = UserApp.builder().
-//                    id(x.getId()).
-//                    firstName((userUpdateRequest.getFirstName()!=null)?userUpdateRequest.getFirstName():x.getFirstName()).
-//                    lastName((userUpdateRequest.getLastName()!=null)?userUpdateRequest.getLastName():x.getLastName()).
-//                    createdDate(x.getCreatedDate()).
-//                    email(x.getEmail()).
-//                    password(x.getPassword()).
-//                    build();
-//            return userRepository.save(u);
-//        }
-//        throw new InvalidJwtAuthenticationException("invalid JWT");
-        return userRepository.save(user);
-    }
 
-    //TODO :handle not found exception
-    public UserApp findUserByID(String id) {
-        return userRepository.findById(id).get();
-    }
-
-    //TODO :handle not found exception
-    public UserApp findUserByEmail(String email) {
-        return userRepository.findByEmail(email).get();
-    }
 }
