@@ -1,6 +1,7 @@
 package com.Aqarati.service;
 
 import com.Aqarati.exception.InvalidJwtAuthenticationException;
+import com.Aqarati.exception.RequestMissingInformation;
 import com.Aqarati.exception.UserAlreadyExists;
 import com.Aqarati.repository.UserRepository;
 import com.Aqarati.model.UserApp;
@@ -31,17 +32,16 @@ public class AuthService {
         return jwtTokenUtil.validateToken(token);
     }
 
-    public String registerUser(UserApp user) throws UserAlreadyExists {
-
-        var x=userRepository.findByEmail(user.getEmail().toLowerCase());
-        var x1=userRepository.findByUname(user.getUname().toLowerCase());
-        System.out.println(user);
-        System.out.println("x1  "+x1);
-        if(x.isPresent()){
+    public String registerUser(AuthRequest authRequest ) throws UserAlreadyExists,RequestMissingInformation {
+        var user=new UserApp(authRequest.getEmail().toLowerCase(), authRequest.getPassword(),authRequest.getUsername().toLowerCase(),authRequest.getPhoneNumber());
+        if(userRepository.findByEmail(user.getEmail().toLowerCase()).isPresent()){
             throw new UserAlreadyExists("Email address already exists");
         }
-        if(x1.isPresent()){
+        if(userRepository.findByUname(user.getUname().toLowerCase()).isPresent()){
             throw new UserAlreadyExists("username already exists");
+        }
+        if(userRepository.findByPhoneNumber(user.getUname().toLowerCase()).isPresent()){
+            throw new UserAlreadyExists("phoneNumber already exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);

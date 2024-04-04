@@ -19,20 +19,11 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @RequiredArgsConstructor
 public class AuthController {
-    @GetMapping("/hel")
-    public String test(){
-        return "Hello world";
-    }
 
     private final AuthService authService;
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> userRegister(@RequestBody @Valid AuthRequest authRequest) throws UserAlreadyExists, RequestMissingInformation {
-        if(authRequest.getUsername() ==null || authRequest.getEmail()==null ||authRequest.getPassword() ==null
-        ){
-            throw new RequestMissingInformation("request missing inofrmation");
-        }
-        var user=new UserApp(authRequest.getEmail().toLowerCase(), authRequest.getPassword(),authRequest.getUsername().toLowerCase());
-        var token=authService.registerUser(user);
+        var token=authService.registerUser(authRequest);
         var res=AuthResponse.builder().
                 message("User registration successful").
                 token(token).
@@ -51,17 +42,4 @@ public class AuthController {
         return new ResponseEntity<AuthResponse>(res,HttpStatus.OK);
     }
 
-//    @Autowired
-//    JwtTokenUtil jwtTokenUtil;
-//    @GetMapping("/validate")
-//    private ResponseEntity<AuthResponse> getInfo(HttpServletRequest request) throws InvalidJwtAuthenticationException {
-//        var token=jwtTokenUtil.resolveToken(request);
-//        var valide=jwtTokenUtil.validateToken(token );
-//        var authResponse=AuthResponse.builder().
-//                message(Boolean.toString(valide)).
-//                token(token).
-//                tokenType("JWT bearer token").
-//                build();
-//        return ResponseEntity.ok().body(authResponse);
-//    }
 }

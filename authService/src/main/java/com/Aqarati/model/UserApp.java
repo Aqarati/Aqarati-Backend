@@ -24,8 +24,7 @@ public class UserApp implements UserDetails {
     private String uname;
     @JsonIgnore
     private String password;
-    private String firstName;
-    private String lastName;
+    private String phoneNumber;
     @JsonIgnore
     private Date createdDate;
 
@@ -33,18 +32,14 @@ public class UserApp implements UserDetails {
         this.createdDate = new Date();
     }
 
-    public UserApp(String email, String password,String uname) {
+    public UserApp(String email, String password,String uname,String phoneNumber) {
         this();
         this.email = email;
         this.password = password;
         this.uname = uname;
+        this.phoneNumber=phoneNumber;
     }
 
-    public UserApp(String email, String password, String uname, String firstName, String lastName) {
-        this(email, password, uname);
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
 
     @Override
     @JsonIgnore
