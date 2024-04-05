@@ -21,11 +21,11 @@ public class UserAppController {
     }
 
     @PutMapping("/profile")
-    public UserApp updateUserInformation(HttpServletRequest request, @RequestBody UserUpdateRequest userUpdateRequest) throws InvalidJwtAuthenticationException, InvalidJwtAuthenticationException {
+    public UserApp updateUserInformation(HttpServletRequest request, @RequestBody UserUpdateRequest userUpdateRequest) throws InvalidJwtAuthenticationException {
         return userService.updateUser(request,userUpdateRequest);
     }
     @PutMapping("/profile/image")
-    public UserApp updateUserImage(HttpServletRequest request, @RequestParam("profile-image")MultipartFile image) throws InvalidJwtAuthenticationException, InvalidJwtAuthenticationException {
+    public UserApp updateUserImage(HttpServletRequest request, @RequestParam("profile-image")MultipartFile image) throws  InvalidJwtAuthenticationException {
         return userService.updateUserImage(request,image);
     }
 }

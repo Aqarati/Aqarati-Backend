@@ -43,7 +43,7 @@ public class ImageService {
             throw new InvalidImageException("Only JPEG and PNG images are allowed");
         }
         try {
-            String ext="."+image.getContentType().substring(6);
+            String ext= ".%s".formatted(image.getContentType().substring(6));
             String key =folderName+"/"+imageName+ext;
             File file = convertMultiPartFileToFile(image);
             amazonS3.putObject(new PutObjectRequest(bucketName, key,  file));
@@ -54,7 +54,7 @@ public class ImageService {
             return null;
         }
 
-    };
+    }
 
     //Return the Presigned Url for non public object
     public String getObject(String objectName){
@@ -68,7 +68,7 @@ public class ImageService {
             e.printStackTrace();
             return null;
         }
-    };
+    }
 
     public File convertMultiPartFileToFile(MultipartFile multipartFile) throws IOException {
         String originalFilename = multipartFile.getOriginalFilename();

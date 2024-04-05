@@ -23,10 +23,9 @@ public class UserService {
         var token = jwtTokenUtil.resolveToken(request);
         var userEmail = jwtTokenUtil.getEmail(token);
         if (jwtTokenUtil.validateToken(token)) {
-            var x = userRepository.findByEmail(userEmail).orElseThrow();
-            return x;
+            return userRepository.findByEmail(userEmail).orElseThrow();
         }
-        throw new InvalidJwtAuthenticationException("invalid JWT");
+        throw new InvalidJwtAuthenticationException("invalid JWT ");
     }
 
     public UserApp updateUser(HttpServletRequest request, UserUpdateRequest userUpdateRequest) throws InvalidJwtAuthenticationException {
