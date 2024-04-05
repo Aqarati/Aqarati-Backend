@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 @Builder@Data
 @AllArgsConstructor@NoArgsConstructor
 public class CreateDocumentRequest {
-    private String name;
-    private String description;
-    private double price;
     private String imgUrl;
+    private double price;
 }

@@ -13,4 +13,9 @@ public class GlobalExceptionHandler {
         final String message="The JWT may it expired,or The signature is invalid";
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ExceptionResponse(ex.getMessage(),message));
     }
+    @ExceptionHandler(PropertyNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handlePropertyNotFoundException(PropertyNotFoundException ex) {
+        final String message="Property Exception";
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ExceptionResponse(ex.getMessage(),message));
+    }
 }
