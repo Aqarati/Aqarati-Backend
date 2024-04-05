@@ -33,6 +33,6 @@ public class PropertyService {
                     build();
             return propertyRepository.save(product);
             }
-        return null;
+        throw new InvalidJwtAuthenticationException("invalid jwt");
     }
 }

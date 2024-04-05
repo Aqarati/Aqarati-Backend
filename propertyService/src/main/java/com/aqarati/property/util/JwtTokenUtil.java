@@ -49,7 +49,7 @@ public class JwtTokenUtil {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             if (claims.getBody().getExpiration().before(new Date())) {
-                return false;
+                throw new InvalidJwtAuthenticationException("Jwt Expired");
             }
             return true;
         } catch (Exception ex) {
