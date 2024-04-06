@@ -132,7 +132,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>propertyService</finalName>
+		<finalName>documentService</finalName>
 	</build>
 
 </project>
