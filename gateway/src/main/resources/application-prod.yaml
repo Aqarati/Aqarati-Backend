@@ -1,0 +1,3 @@
+eureka:
+  serviceUrl:
+      defaultZone: ${EURUKA_SERVER_HOST:http://eureka-server:8761/eureka}
