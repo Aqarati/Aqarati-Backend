@@ -20,17 +20,15 @@ spring:
           uri: lb://property-service
           predicates:
             - Path=/property/**
-
-        - id: image-service_route
-          uri: lb://image-service
-          predicates:
-            - Path=/image/**
-
         - id: document-service_route
           uri: lb://document-service
           predicates:
             - Path=/document/**
 
+        - id: image-service_route
+          uri: lb://image-service
+          predicates:
+            - Path=/image/**
     discovery:
       locator:
         enabled: true
