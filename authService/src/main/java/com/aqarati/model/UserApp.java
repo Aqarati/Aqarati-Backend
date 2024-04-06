@@ -4,19 +4,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 @Data
 @Builder
 @Document("Users")
-@AllArgsConstructor
+@AllArgsConstructor@NoArgsConstructor
 public class UserApp implements UserDetails {
     @MongoId
     private String id;
@@ -25,26 +25,27 @@ public class UserApp implements UserDetails {
     @JsonIgnore
     private String password;
     private String phoneNumber;
+    @Builder.Default
+    private List<String> role=new ArrayList<>(Arrays.asList("ROLE_USER"));
     @JsonIgnore
-    private Date createdDate;
-
-    public UserApp() {
-        this.createdDate = new Date();
-    }
+    @Builder.Default
+    private Date createdDate=new Date();
 
     public UserApp(String email, String password,String uname,String phoneNumber) {
-        this();
         this.email = email;
         this.password = password;
         this.uname = uname;
         this.phoneNumber=phoneNumber;
     }
 
-
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return AuthorityUtils.NO_AUTHORITIES;
+        var authority=new ArrayList<GrantedAuthority>();
+        for(String r:role){
+            authority.add(new SimpleGrantedAuthority(r));
+        }
+        return authority;
     }
 
     @Override

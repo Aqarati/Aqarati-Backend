@@ -33,14 +33,20 @@ public class AuthService {
     }
 
     public String registerUser(AuthRequest authRequest ) throws UserAlreadyExists,RequestMissingInformation {
-        var user=new UserApp(authRequest.getEmail().toLowerCase(), authRequest.getPassword(),authRequest.getUsername().toLowerCase(),authRequest.getPhoneNumber());
+        var user= UserApp.builder().
+                        email(authRequest.getEmail().toLowerCase()).
+                        password(authRequest.getPassword()).
+                        uname(authRequest.getUsername()).
+                        phoneNumber(authRequest.getPhoneNumber()).
+                        build();
+
         if(userRepository.findByEmail(user.getEmail().toLowerCase()).isPresent()){
             throw new UserAlreadyExists("Email address already exists");
         }
         if(userRepository.findByUname(user.getUname().toLowerCase()).isPresent()){
             throw new UserAlreadyExists("username already exists");
         }
-        if(userRepository.findByPhoneNumber(user.getUname().toLowerCase()).isPresent()){
+        if(userRepository.findByPhoneNumber(user.getPhoneNumber().toLowerCase()).isPresent()){
             throw new UserAlreadyExists("phoneNumber already exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));

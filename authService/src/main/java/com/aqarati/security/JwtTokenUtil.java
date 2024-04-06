@@ -30,11 +30,13 @@ public class JwtTokenUtil {
     public String createToken(UserApp userApp) {
         Claims claims = Jwts.claims().setSubject(userApp.getEmail());
         claims.put("uid",userApp.getId());
+        if(userApp.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"))){
+            claims.put("role","admin");
+        }
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("typ", "JWT");
-        System.out.println(claims.toString());
         return Jwts.builder()
                 .setHeader(hashMap)
                 .setClaims(claims)
