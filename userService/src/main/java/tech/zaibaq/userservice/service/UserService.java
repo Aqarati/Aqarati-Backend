@@ -35,7 +35,6 @@ public class UserService {
             var x = userRepository.findByEmail(userEmail).orElseThrow();
             x.setFirstName(userUpdateRequest.getFirstName());
             x.setLastName(userUpdateRequest.getLastName());
-            x.setPhoneNumber(userUpdateRequest.getPhoneNumber());
             return userRepository.save(x);
         }
         throw new InvalidJwtAuthenticationException("invalid JWT");
