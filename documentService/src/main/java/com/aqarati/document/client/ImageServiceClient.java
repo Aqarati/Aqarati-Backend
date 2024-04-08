@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ImageServiceClient {
 
     @PostMapping(value = "/image/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String uploadImage(@RequestPart("file") MultipartFile image,
+    public String uploadImage(@RequestPart("image") MultipartFile image,
                        @RequestPart("folder") String folderName,
                        @RequestPart("name") String imageName);
 }

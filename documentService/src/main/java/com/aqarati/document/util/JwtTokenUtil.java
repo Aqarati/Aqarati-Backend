@@ -41,7 +41,18 @@ public class JwtTokenUtil {
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7, bearerToken.length());
         }
-        throw new InvalidJwtAuthenticationException("Cnat Reslove Token");
+        throw new InvalidJwtAuthenticationException("Can`t Resolve Token");
+    }
+    public boolean isUserAdmin(String token)  {
+            String role= Jwts.parser()
+                     .setSigningKey(secretKey)
+                     .parseClaimsJws(token)
+                     .getBody()
+                     .get("role", String.class);
+            if (role ==null){
+                return false;
+            }
+         return true;
     }
 
 
