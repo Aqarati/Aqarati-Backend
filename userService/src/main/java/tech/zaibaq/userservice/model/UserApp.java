@@ -7,7 +7,10 @@ import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -24,6 +27,8 @@ public class UserApp  {
     private String lastName;
     private String phoneNumber;
     private String imageUrl;
+    @JsonIgnore
+    private List<String> role;
     @JsonIgnore
     private Date createdDate;
 
