@@ -3,14 +3,18 @@ package com.aqarati.document.service;
 import com.aqarati.document.client.ImageServiceClient;
 import com.aqarati.document.exception.PropertyNotFoundException;
 import com.aqarati.document.exception.UnAuthorizedAccessException;
+import com.aqarati.document.model.DocumentStatus;
 import com.aqarati.document.repository.DocumentRepository;
 import com.aqarati.document.repository.PropertyRepository;
+import com.aqarati.document.request.ChangeDocumentStatusRequest;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.aqarati.document.exception.InvalidJwtAuthenticationException;
 import com.aqarati.document.model.Document;
 import com.aqarati.document.util.JwtTokenUtil;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -55,7 +59,6 @@ public class DocumentService {
         }
         throw new InvalidJwtAuthenticationException("");
     }
-    //Todo: check if his admin
     public List<Document> adminGetAllDocument(HttpServletRequest request)throws InvalidJwtAuthenticationException, UnAuthorizedAccessException {
         var token = jwtTokenUtil.resolveToken(request);
         if (jwtTokenUtil.validateToken(token)) {
@@ -66,5 +69,20 @@ public class DocumentService {
         }
         throw new InvalidJwtAuthenticationException("");
     }
-
+    public Document adminChangeDocumentStatus(HttpServletRequest request, @RequestBody ChangeDocumentStatusRequest changeDocumentStatusRequest) throws InvalidJwtAuthenticationException, UnAuthorizedAccessException {
+        var token = jwtTokenUtil.resolveToken(request);
+        if (jwtTokenUtil.validateToken(token)) {
+            if (jwtTokenUtil.isUserAdmin(token)){
+                var doc =documentRepository.findById(changeDocumentStatusRequest.getId()).orElseThrow(()->new NotFoundException("document with that id not found "));
+                switch (changeDocumentStatusRequest.getStatus()){
+                    case APPROVED -> doc.setStatus(DocumentStatus.APPROVED);
+                    case PENDING -> doc.setStatus(DocumentStatus.PENDING);
+                    case DENIED -> doc.setStatus(DocumentStatus.DENIED);
+                }
+                return documentRepository.save(doc);
+            }
+            throw new UnAuthorizedAccessException("you not allowed to access");
+        }
+        throw new InvalidJwtAuthenticationException("");
+    }
 }

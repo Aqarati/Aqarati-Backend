@@ -3,6 +3,7 @@ package com.aqarati.document.controller;
 import com.aqarati.document.exception.PropertyNotFoundException;
 import com.aqarati.document.exception.UnAuthorizedAccessException;
 import com.aqarati.document.model.Document;
+import com.aqarati.document.request.ChangeDocumentStatusRequest;
 import com.aqarati.document.service.DocumentService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -32,4 +33,9 @@ public class DocumentController {
     public List<Document> adminGetAllDocument(HttpServletRequest request) throws InvalidJwtAuthenticationException, UnAuthorizedAccessException {
         return documentService.adminGetAllDocument(request);
     }
+    @PostMapping("/admin")
+    public Document adminChangeDocumentStatus(HttpServletRequest request, @RequestBody ChangeDocumentStatusRequest changeDocumentStatusRequest) throws InvalidJwtAuthenticationException, UnAuthorizedAccessException {
+        return documentService.adminChangeDocumentStatus(request,changeDocumentStatusRequest);
+    }
+
 }
