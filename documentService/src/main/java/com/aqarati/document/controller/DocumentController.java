@@ -1,6 +1,6 @@
 package com.aqarati.document.controller;
 
-import com.aqarati.document.exception.PropertyNotFoundException;
+import com.aqarati.document.exception.NotFoundException;
 import com.aqarati.document.exception.UnAuthorizedAccessException;
 import com.aqarati.document.model.Document;
 import com.aqarati.document.request.ChangeDocumentStatusRequest;
@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping("/document")
 @RequiredArgsConstructor
 public class DocumentController {
+    
     private final DocumentService documentService;
 
     @GetMapping({"/",""})
@@ -25,17 +26,27 @@ public class DocumentController {
     }
 
     @PostMapping({"/",""})
-    public Document createDocument(HttpServletRequest request, @RequestParam(name = "image") MultipartFile documnetImage,@RequestParam("property-id")String propertyId) throws InvalidJwtAuthenticationException, PropertyNotFoundException,Exception {
+    public Document createDocument(HttpServletRequest request, @RequestParam(name = "image") MultipartFile documnetImage,@RequestParam("property-id")String propertyId) throws InvalidJwtAuthenticationException, NotFoundException,Exception {
         return documentService.createDocument(request,documnetImage,propertyId);
+    }
+
+    @PutMapping({"/",""})
+    public Document updateDocument(HttpServletRequest request, @RequestParam(name = "image") MultipartFile documnetImage,@RequestParam("property-id")String propertyId,@RequestParam("document-id") String documentId) throws InvalidJwtAuthenticationException, NotFoundException,Exception {
+        return documentService.updateDocument(request,documnetImage,propertyId,documentId);
     }
 
     @GetMapping("/admin")
     public List<Document> adminGetAllDocument(HttpServletRequest request) throws InvalidJwtAuthenticationException, UnAuthorizedAccessException {
         return documentService.adminGetAllDocument(request);
     }
-    @PostMapping("/admin")
-    public Document adminChangeDocumentStatus(HttpServletRequest request, @RequestBody ChangeDocumentStatusRequest changeDocumentStatusRequest) throws InvalidJwtAuthenticationException, UnAuthorizedAccessException {
+
+    @PutMapping("/admin")
+    public Document adminChangeDocumentStatus(HttpServletRequest request, @RequestBody ChangeDocumentStatusRequest changeDocumentStatusRequest) throws InvalidJwtAuthenticationException, UnAuthorizedAccessException, NotFoundException {
         return documentService.adminChangeDocumentStatus(request,changeDocumentStatusRequest);
     }
 
+    @DeleteMapping("/admin")
+    public Document adminDeleteDocument(HttpServletRequest request, @RequestParam("id") Long id) throws InvalidJwtAuthenticationException, UnAuthorizedAccessException, NotFoundException {
+        return documentService.adminDeleteDocument(request,id);
+    }
 }
