@@ -11,5 +11,4 @@ public class CreatePropertyRequest {
     private String name;
     private String description;
     private double price;
-    private String imgUrl;
 }

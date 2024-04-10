@@ -2,22 +2,19 @@ package com.aqarati.property.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.Date;
+import java.io.Serializable;
+import java.util.*;
 
 
 @Entity
-@Table(name = "Property")
-@Data@Builder
+@Table(name = "property")
+@Setter@Getter@Builder
 @AllArgsConstructor@NoArgsConstructor
-public class Property {
+public class Property implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
     private Long id;
 
     @Column(name = "name", nullable = false)
@@ -29,11 +26,12 @@ public class Property {
     @Column(name = "price", nullable = false)
     private double price;
 
-    @Column(name = "img_url")
-    private String imgUrl;
-
     @Column(name = "user_id",nullable = false)
     private String userId;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
+    private List<PropertyImage> propertyImages = new ArrayList<>();
 
     @Column(name = "created_time")
     @JsonIgnore
