@@ -24,5 +24,8 @@ public class PropertyImage {
     @JoinColumn(name = "property_id")
     private Property property;
 
+    @Builder.Default
+    @Column(name = "img_url")
+    private boolean vr=false;
 
 }
