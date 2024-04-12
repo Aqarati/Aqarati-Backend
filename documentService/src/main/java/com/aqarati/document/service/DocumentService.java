@@ -77,13 +77,16 @@ public class DocumentService {
         throw new InvalidJwtAuthenticationException("");
     }
 
-    public List<Document> adminGetAllDocument(HttpServletRequest request)throws InvalidJwtAuthenticationException, UnAuthorizedAccessException {
+    public List<Document> adminGetAllDocument(HttpServletRequest request,DocumentStatus documentStatus)throws InvalidJwtAuthenticationException, UnAuthorizedAccessException {
         var token = jwtTokenUtil.resolveToken(request);
         if (jwtTokenUtil.validateToken(token)) {
-            if (jwtTokenUtil.isUserAdmin(token)){
-            return documentRepository.findAll();
+            if (!jwtTokenUtil.isUserAdmin(token)){
+                throw new UnAuthorizedAccessException("you not allowed to access");
             }
-            throw new UnAuthorizedAccessException("you not allowed to access");
+            if(documentStatus == null){
+                return documentRepository.findAll();
+            }
+            return documentRepository.findAllByStatus(documentStatus);
         }
         throw new InvalidJwtAuthenticationException("");
     }

@@ -3,6 +3,7 @@ package com.aqarati.document.controller;
 import com.aqarati.document.exception.NotFoundException;
 import com.aqarati.document.exception.UnAuthorizedAccessException;
 import com.aqarati.document.model.Document;
+import com.aqarati.document.model.DocumentStatus;
 import com.aqarati.document.request.ChangeDocumentStatusRequest;
 import com.aqarati.document.service.DocumentService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,8 +37,8 @@ public class DocumentController {
     }
 
     @GetMapping("/admin")
-    public List<Document> adminGetAllDocument(HttpServletRequest request) throws InvalidJwtAuthenticationException, UnAuthorizedAccessException {
-        return documentService.adminGetAllDocument(request);
+    public List<Document> adminGetAllDocument(HttpServletRequest request, @RequestParam(name = "filter",required = false) DocumentStatus documentStatus) throws InvalidJwtAuthenticationException, UnAuthorizedAccessException {
+        return documentService.adminGetAllDocument(request,documentStatus);
     }
 
     @PutMapping("/admin")
