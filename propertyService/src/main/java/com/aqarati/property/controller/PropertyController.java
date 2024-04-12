@@ -20,20 +20,32 @@ import java.util.List;
 public class PropertyController {
     private final PropertyService propertyService;
     private final PropertyImageRepositorty propertyImageRepositorty;
-    @PostMapping({"/",""})
-    public Property createProperty(HttpServletRequest request, @RequestBody CreatePropertyRequest propertyRequest) throws InvalidJwtAuthenticationException {
-        return propertyService.createProperty(request,propertyRequest);
-    }
 
     @GetMapping({"/",""})
     public List<Property> getAllProperty(){
         return propertyService.getAll();
     }
 
-    @PutMapping("/{property-id}")
-    public Property updatePropertyImage(HttpServletRequest request, @RequestParam(name = "images") List<MultipartFile> propertyImages, @PathVariable("property-id")String propertyId) throws InvalidJwtAuthenticationException, NotFoundException {
+    @PostMapping({"/",""})
+    public Property createProperty(HttpServletRequest request, @RequestBody CreatePropertyRequest propertyRequest) throws InvalidJwtAuthenticationException {
+        return propertyService.createProperty(request,propertyRequest);
+    }
+
+    @PutMapping("/")
+    public Property updateProperty(HttpServletRequest request,@RequestBody Property property) throws InvalidJwtAuthenticationException, NotFoundException {
+        return propertyService.updateProperty(request,property);
+    }
+
+    @DeleteMapping("{id}")
+    public Property deleteProperty (HttpServletRequest request,@PathVariable("id") Long propertyId) throws InvalidJwtAuthenticationException,NotFoundException {
+        return propertyService.deleteProperty(request,propertyId);
+    }
+
+    @PutMapping("/image/{property-id}")
+    public Property updatePropertyImage(HttpServletRequest request, @RequestParam(name = "images") List<MultipartFile> propertyImages, @PathVariable("property-id")Long propertyId) throws InvalidJwtAuthenticationException, NotFoundException {
         return propertyService.updatePropertyImage(request,propertyImages,propertyId);
     }
+
     @GetMapping("/image")
     public List<PropertyImage> GetPropertyImage(){
         return propertyImageRepositorty.findAll();

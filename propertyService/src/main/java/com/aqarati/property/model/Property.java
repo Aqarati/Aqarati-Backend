@@ -24,7 +24,7 @@ public class Property implements Serializable {
     private String description;
 
     @Column(name = "price", nullable = false)
-    private double price;
+    private Double price;
 
     @Column(name = "user_id",nullable = false)
     private String userId;
