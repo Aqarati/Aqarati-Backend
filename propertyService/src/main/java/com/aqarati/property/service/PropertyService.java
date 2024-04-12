@@ -54,13 +54,13 @@ public class PropertyService {
             throw new InvalidJwtAuthenticationException("invalid jwt");
         }
         var p =propertyRepository.findById(property.getId()).orElseThrow(()-> new NotFoundException("property with that id not found"));
-        if(!(jwtTokenUtil.getUserId(token).equals(property.getUserId()))){
+        if(!(jwtTokenUtil.getUserId(token).equals(p.getUserId()))){
             throw new NotFoundException("property does not belong to that user");
         }
         p.setName((property.getName()!=null)? property.getName():p.getName());
         p.setPrice((property.getPrice() != null)? property.getPrice():p.getPrice());
         p.setDescription((property.getDescription() != null)? property.getDescription():p.getDescription());
-        return p;
+        return propertyRepository.save(p);
     }
     public Property deleteProperty (HttpServletRequest request,Long propertyId) throws InvalidJwtAuthenticationException,NotFoundException{
         var token = jwtTokenUtil.resolveToken(request);
@@ -68,7 +68,7 @@ public class PropertyService {
             throw new InvalidJwtAuthenticationException("invalid jwt");
         }
         var p =propertyRepository.findById(propertyId).orElseThrow(()-> new NotFoundException("property with that id not found"));
-        if(!(jwtTokenUtil.getUserId(token).equals(propertyId))){
+        if(!(jwtTokenUtil.getUserId(token).equals(p.getUserId()))){
             throw new NotFoundException("property does not belong to that user");
         }
         propertyRepository.delete(p);

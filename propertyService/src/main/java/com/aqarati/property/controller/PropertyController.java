@@ -21,7 +21,7 @@ public class PropertyController {
     private final PropertyService propertyService;
     private final PropertyImageRepositorty propertyImageRepositorty;
 
-    
+
     @GetMapping({"/",""})
     public List<Property> getAllProperty(){
         return propertyService.getAll();
@@ -37,8 +37,8 @@ public class PropertyController {
         return propertyService.updateProperty(request,property);
     }
 
-    @DeleteMapping("{id}")
-    public Property deleteProperty (HttpServletRequest request,@PathVariable("id") Long propertyId) throws InvalidJwtAuthenticationException,NotFoundException {
+    @DeleteMapping("/{property-id}")
+    public Property deleteProperty (HttpServletRequest request,@PathVariable("property-id") Long propertyId) throws InvalidJwtAuthenticationException,NotFoundException {
         return propertyService.deleteProperty(request,propertyId);
     }
 
