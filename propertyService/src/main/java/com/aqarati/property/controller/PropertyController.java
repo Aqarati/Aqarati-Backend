@@ -20,7 +20,7 @@ import java.util.List;
 public class PropertyController {
     private final PropertyService propertyService;
     private final PropertyImageRepositorty propertyImageRepositorty;
-
+    
     @GetMapping({"/",""})
     public List<Property> getAllProperty(){
         return propertyService.getAll();
@@ -31,7 +31,7 @@ public class PropertyController {
         return propertyService.createProperty(request,propertyRequest);
     }
 
-    @PutMapping("/")
+    @PutMapping("/{property-id}")
     public Property updateProperty(HttpServletRequest request,@RequestBody Property property) throws InvalidJwtAuthenticationException, NotFoundException {
         return propertyService.updateProperty(request,property);
     }
