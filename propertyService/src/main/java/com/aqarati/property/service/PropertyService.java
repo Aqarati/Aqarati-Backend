@@ -12,6 +12,7 @@ import com.aqarati.property.exception.InvalidJwtAuthenticationException;
 import com.aqarati.property.model.Property;
 import com.aqarati.property.request.CreatePropertyRequest;
 import com.aqarati.property.util.JwtTokenUtil;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,8 +48,34 @@ public class PropertyService {
             }
         throw new InvalidJwtAuthenticationException("invalid jwt");
     }
+    public Property updateProperty(HttpServletRequest request, Property property) throws InvalidJwtAuthenticationException, NotFoundException {
+        var token = jwtTokenUtil.resolveToken(request);
+        if (!jwtTokenUtil.validateToken(token)) {
+            throw new InvalidJwtAuthenticationException("invalid jwt");
+        }
+        var p =propertyRepository.findById(property.getId()).orElseThrow(()-> new NotFoundException("property with that id not found"));
+        if(!(jwtTokenUtil.getUserId(token).equals(property.getUserId()))){
+            throw new NotFoundException("property does not belong to that user");
+        }
+        p.setName((property.getName()!=null)? property.getName():p.getName());
+        p.setPrice((property.getPrice() != null)? property.getPrice():p.getPrice());
+        p.setDescription((property.getDescription() != null)? property.getDescription():p.getDescription());
+        return p;
+    }
+    public Property deleteProperty (HttpServletRequest request,Long propertyId) throws InvalidJwtAuthenticationException,NotFoundException{
+        var token = jwtTokenUtil.resolveToken(request);
+        if (!jwtTokenUtil.validateToken(token)) {
+            throw new InvalidJwtAuthenticationException("invalid jwt");
+        }
+        var p =propertyRepository.findById(propertyId).orElseThrow(()-> new NotFoundException("property with that id not found"));
+        if(!(jwtTokenUtil.getUserId(token).equals(propertyId))){
+            throw new NotFoundException("property does not belong to that user");
+        }
+        propertyRepository.delete(p);
+        return p;
+    }
 
-    public Property updatePropertyImage(HttpServletRequest request, @RequestParam(name = "image") List<MultipartFile> propertyImages, @RequestParam("property-id")String propertyId) throws InvalidJwtAuthenticationException,NotFoundException {
+    public Property updatePropertyImage(HttpServletRequest request,List<MultipartFile> propertyImages,long propertyId) throws InvalidJwtAuthenticationException,NotFoundException {
         var token = jwtTokenUtil.resolveToken(request);
         if (!jwtTokenUtil.validateToken(token)) {
             throw new InvalidJwtAuthenticationException("invalid jwt");
