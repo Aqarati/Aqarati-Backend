@@ -55,13 +55,13 @@ public class ImageService {
         }
 
     }
-
+    //object name example document-image/{property id}/{1.jpeg}
     //Return the Presigned Url for non public object
-    public String getObject(String objectName){
+    public String  getObject(String objectKey){
         try {
             Date expiration = new Date(System.currentTimeMillis() + 3600 * 1000); // URL expiration time (1 hour)
             GeneratePresignedUrlRequest generatePresignedUrlRequest =
-                    new GeneratePresignedUrlRequest(bucketName, objectName).withExpiration(expiration);
+                    new GeneratePresignedUrlRequest(bucketName, objectKey).withExpiration(expiration);
             URL url = amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
             return url.toString();
         } catch (SdkClientException e) {
