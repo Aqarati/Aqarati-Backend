@@ -38,4 +38,10 @@ public class PropertyController {
     public List<PropertyImage> GetPropertyImage(){
         return propertyImageRepositorty.findAll();
     }
+
+    @PutMapping("/image/active/{id}")
+    public PropertyImage activatePropertyImageVr(@PathVariable("id")Long imageId) throws NotFoundException {
+        return propertyService.activatePropertyImageVr(imageId);
+    }
+
 }

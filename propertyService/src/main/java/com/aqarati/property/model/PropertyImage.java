@@ -25,7 +25,10 @@ public class PropertyImage {
     private Property property;
 
     @Builder.Default
-    @Column(name = "img_url")
+    @Column
     private boolean vr=false;
+
+    @Column(name = "vr_img_url")
+    private String vr_url;
 
 }

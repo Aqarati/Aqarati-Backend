@@ -76,4 +76,13 @@ public class PropertyService {
         }
             return property;
         }
+    public PropertyImage activatePropertyImageVr(Long imageId) throws NotFoundException {
+        var image =propertyImageRepositorty.findById(imageId).orElseThrow(()->new NotFoundException("property with that id not found"));
+        image.setVr(true);
+        int lastSlashIndex = image.getImgUrl().lastIndexOf('/');
+        String fileName = image.getImgUrl().substring(lastSlashIndex + 1);
+        String imageUrl="https://master.d10hk0k70g00y4.amplifyapp.com/"+image.getProperty().getId()+"/"+fileName;
+        image.setVr_url(imageUrl);
+        return propertyImageRepositorty.save(image);
+    }
 }
