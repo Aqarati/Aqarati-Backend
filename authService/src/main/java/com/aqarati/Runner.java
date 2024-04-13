@@ -18,6 +18,8 @@ public class Runner implements CommandLineRunner {
 
     @Value("${spring.profiles.active}")
     private String activeProfile;
+    @Value("${eureka.client.serviceUrl.defaultZone}")
+    private String serviceUrl;
     Logger logger = Logger.getLogger(getClass().getName());
 
     private final AuthService authService;
@@ -31,6 +33,7 @@ public class Runner implements CommandLineRunner {
 //        logger.info("crated user "+user.toString());
         logger.info("Active Profile");
         logger.info(activeProfile);
+        logger.info("euruka:"+serviceUrl);
 
 
     }

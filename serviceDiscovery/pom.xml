@@ -72,10 +72,7 @@
 			<plugin>
 				<groupId>org.eclipse.jkube</groupId>
 				<artifactId>kubernetes-maven-plugin</artifactId>
-				<version>1.16.0</version>
-				<configuration>
-					<buildStrategy>jib</buildStrategy>
-				</configuration>
+				<version>1.16.2</version>
 			</plugin>
 		</plugins>
 		<finalName>serviceDiscovery</finalName>

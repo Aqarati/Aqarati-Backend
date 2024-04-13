@@ -1,4 +1,4 @@
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EURUKA_SERVER_HOST:http://eureka-server:8761/eureka}
+      defaultZone: ${EURUKA_SERVER_HOST:http://service-discovery.default.svc.cluster.local:8761/eureka}
