@@ -15,7 +15,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<spring-cloud.version>2023.0.0</spring-cloud.version>
-		<jkube.createExternalUrls>true</jkube.createExternalUrls>
+<!--		<jkube.createExternalUrls>true</jkube.createExternalUrls>-->
 		<jkube.generator.name>ahmd66699/aqarati-${project.name}:v0.01</jkube.generator.name>
 	</properties>
 	<dependencies>

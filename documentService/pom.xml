@@ -127,9 +127,6 @@
 				<groupId>org.eclipse.jkube</groupId>
 				<artifactId>kubernetes-maven-plugin</artifactId>
 				<version>1.16.0</version>
-				<configuration>
-					<buildStrategy>jib</buildStrategy>
-				</configuration>
 			</plugin>
 		</plugins>
 		<finalName>documentService</finalName>
