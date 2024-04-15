@@ -1,4 +1,4 @@
-package com.aqarati.security;
+package com.aqarati.auth.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

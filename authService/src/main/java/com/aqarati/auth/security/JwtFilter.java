@@ -1,7 +1,7 @@
-package com.aqarati.security;
+package com.aqarati.auth.security;
 
-import com.aqarati.repository.UserRepository;
-import com.aqarati.model.UserApp;
+import com.aqarati.auth.repository.UserRepository;
+import com.aqarati.auth.model.UserApp;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

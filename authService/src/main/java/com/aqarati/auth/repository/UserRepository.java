@@ -1,6 +1,6 @@
-package com.aqarati.repository;
+package com.aqarati.auth.repository;
 
-import com.aqarati.model.UserApp;
+import com.aqarati.auth.model.UserApp;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

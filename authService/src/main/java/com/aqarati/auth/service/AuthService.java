@@ -1,12 +1,12 @@
-package com.aqarati.service;
+package com.aqarati.auth.service;
 
-import com.aqarati.exception.InvalidJwtAuthenticationException;
-import com.aqarati.exception.RequestMissingInformation;
-import com.aqarati.exception.UserAlreadyExists;
-import com.aqarati.repository.UserRepository;
-import com.aqarati.model.UserApp;
-import com.aqarati.request.AuthRequest;
-import com.aqarati.security.JwtTokenUtil;
+import com.aqarati.auth.exception.InvalidJwtAuthenticationException;
+import com.aqarati.auth.exception.RequestMissingInformation;
+import com.aqarati.auth.exception.UserAlreadyExists;
+import com.aqarati.auth.repository.UserRepository;
+import com.aqarati.auth.model.UserApp;
+import com.aqarati.auth.request.AuthRequest;
+import com.aqarati.auth.security.JwtTokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

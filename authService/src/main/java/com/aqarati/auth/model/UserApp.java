@@ -1,4 +1,4 @@
-package com.aqarati.model;
+package com.aqarati.auth.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

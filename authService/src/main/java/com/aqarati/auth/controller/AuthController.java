@@ -1,10 +1,10 @@
-package com.aqarati.controller;
+package com.aqarati.auth.controller;
 
-import com.aqarati.exception.RequestMissingInformation;
-import com.aqarati.exception.UserAlreadyExists;
-import com.aqarati.request.AuthRequest;
-import com.aqarati.response.AuthResponse;
-import com.aqarati.service.AuthService;
+import com.aqarati.auth.exception.RequestMissingInformation;
+import com.aqarati.auth.exception.UserAlreadyExists;
+import com.aqarati.auth.request.AuthRequest;
+import com.aqarati.auth.response.AuthResponse;
+import com.aqarati.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

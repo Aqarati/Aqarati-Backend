@@ -1,4 +1,4 @@
-package com.aqarati.request;
+package com.aqarati.auth.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

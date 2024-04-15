@@ -1,7 +1,7 @@
-package com.aqarati.exception;
+package com.aqarati.auth.exception;
 
-import com.aqarati.response.ValidationErrorResponse;
-import com.aqarati.response.ExceptionResponse;
+import com.aqarati.auth.response.ValidationErrorResponse;
+import com.aqarati.auth.response.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;

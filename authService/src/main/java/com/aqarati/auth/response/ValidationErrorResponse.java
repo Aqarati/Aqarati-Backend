@@ -1,4 +1,4 @@
-package com.aqarati.response;
+package com.aqarati.auth.response;
 
 import lombok.Data;
 import org.springframework.validation.FieldError;

@@ -1,8 +1,8 @@
 package com.aqarati.auth;
 
-import com.aqarati.model.UserApp;
-import com.aqarati.repository.UserRepository;
-import com.aqarati.service.AuthService;
+import com.aqarati.auth.model.UserApp;
+import com.aqarati.auth.repository.UserRepository;
+import com.aqarati.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;

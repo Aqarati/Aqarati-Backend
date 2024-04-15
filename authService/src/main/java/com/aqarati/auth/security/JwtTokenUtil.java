@@ -1,7 +1,7 @@
-package com.aqarati.security;
+package com.aqarati.auth.security;
 
-import com.aqarati.exception.InvalidJwtAuthenticationException;
-import com.aqarati.model.UserApp;
+import com.aqarati.auth.exception.InvalidJwtAuthenticationException;
+import com.aqarati.auth.model.UserApp;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

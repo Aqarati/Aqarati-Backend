@@ -1,8 +1,9 @@
-package com.aqarati.exception;
+package com.aqarati.auth.exception;
 
 public class RequestMissingInformation extends Exception{
     public RequestMissingInformation() {
-        super();
+
+
     }
 
     public RequestMissingInformation(String message) {
