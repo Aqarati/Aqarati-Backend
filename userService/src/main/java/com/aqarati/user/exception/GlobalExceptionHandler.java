@@ -1,10 +1,10 @@
-package com.aqarati.userservice.exception;
+package com.aqarati.user.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import com.aqarati.userservice.response.ExceptionResponse;
+import com.aqarati.user.response.ExceptionResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

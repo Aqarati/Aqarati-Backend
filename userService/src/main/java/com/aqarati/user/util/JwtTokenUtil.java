@@ -1,4 +1,4 @@
-package com.aqarati.userservice.util;
+package com.aqarati.user.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-import com.aqarati.userservice.exception.InvalidJwtAuthenticationException;
+import com.aqarati.user.exception.InvalidJwtAuthenticationException;
 
 import java.util.Date;
 

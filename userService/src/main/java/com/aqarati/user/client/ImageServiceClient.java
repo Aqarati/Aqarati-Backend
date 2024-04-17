@@ -1,4 +1,4 @@
-package com.aqarati.userservice.client;
+package com.aqarati.user.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;

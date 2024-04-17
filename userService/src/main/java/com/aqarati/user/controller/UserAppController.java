@@ -1,13 +1,13 @@
-package com.aqarati.userservice.controller;
+package com.aqarati.user.controller;
 
-import com.aqarati.userservice.request.UserUpdateRequest;
-import com.aqarati.userservice.service.UserService;
+import com.aqarati.user.request.UserUpdateRequest;
+import com.aqarati.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.aqarati.userservice.exception.InvalidJwtAuthenticationException;
-import com.aqarati.userservice.model.UserApp;
+import com.aqarati.user.exception.InvalidJwtAuthenticationException;
+import com.aqarati.user.model.UserApp;
 
 @RestController
 @RequestMapping("/user")

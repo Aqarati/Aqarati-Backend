@@ -1,16 +1,16 @@
-package com.aqarati.userservice.service;
+package com.aqarati.user.service;
 
 
-import com.aqarati.userservice.request.UserUpdateRequest;
+import com.aqarati.user.request.UserUpdateRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import com.aqarati.userservice.client.ImageServiceClient;
-import com.aqarati.userservice.exception.InvalidJwtAuthenticationException;
-import com.aqarati.userservice.model.UserApp;
-import com.aqarati.userservice.repository.UserRepository;
-import com.aqarati.userservice.util.JwtTokenUtil;
+import com.aqarati.user.client.ImageServiceClient;
+import com.aqarati.user.exception.InvalidJwtAuthenticationException;
+import com.aqarati.user.model.UserApp;
+import com.aqarati.user.repository.UserRepository;
+import com.aqarati.user.util.JwtTokenUtil;
 
 @Service
 @RequiredArgsConstructor

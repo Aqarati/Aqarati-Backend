@@ -1,6 +1,6 @@
-package com.aqarati.userservice.repository;
+package com.aqarati.user.repository;
 
-import com.aqarati.userservice.model.UserApp;
+import com.aqarati.user.model.UserApp;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

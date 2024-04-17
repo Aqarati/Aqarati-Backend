@@ -1,4 +1,4 @@
-package com.aqarati.userservice.exception;
+package com.aqarati.user.exception;
 
 public class InvalidJwtAuthenticationException extends Exception {
     public InvalidJwtAuthenticationException() {

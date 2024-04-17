@@ -1,4 +1,4 @@
-package com.aqarati.userservice;
+package com.aqarati.user;
 
 
 import lombok.RequiredArgsConstructor;

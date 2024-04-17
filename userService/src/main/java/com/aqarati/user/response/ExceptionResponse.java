@@ -1,4 +1,4 @@
-package com.aqarati.userservice.response;
+package com.aqarati.user.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
