@@ -83,4 +83,29 @@
 		<finalName>gateway</finalName>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<active>dev</active>
+			</properties>
+		</profile>
+		<profile>
+			<id>local</id>
+			<properties>
+				<active>local</active>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<active>prod</active>
+			</properties>
+		</profile>
+	</profiles>
+
+
 </project>
