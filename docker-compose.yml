@@ -53,26 +53,26 @@ services:
     networks:
       - aqarati-network
   elasticsearch:
-    image: elasticsearch:7.9.1
+    image: elasticsearch:8.13.0
     container_name: elasticsearch
     ports:
       - "9200:9200"
       - "9300:9300"
     volumes:
-      - data:/usr/share/elasticsearch/data/
+      - elastic_data:/usr/share/elasticsearch/data/
       - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     environment:
       - discovery.type=single-node
       - http.host=0.0.0.0
       - transport.host=0.0.0.0
       - xpack.security.enabled=false
-      - xpack.monitoring.enabled=false
+#      - xpack.monitoring.enabled=false
       - cluster.name=elasticsearch
       - bootstrap.memory_lock=true
     networks:
       - aqarati-network
   logstash:
-      image: logstash:7.9.1
+      image: logstash:8.13.0
       container_name: logstash
       ports:
         - "5044:5044"
@@ -88,7 +88,7 @@ services:
       depends_on:
         - elasticsearch
   kibana:
-    image: kibana:7.9.1
+    image: kibana:8.13.0
     container_name: kibana
     ports:
       - "5601:5601"
@@ -104,6 +104,6 @@ networks:
     driver: bridge
 
 volumes:
-  data:
+  elastic_data:
   logstash_data:
   kibana_data:
