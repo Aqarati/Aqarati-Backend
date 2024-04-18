@@ -3,10 +3,12 @@ package com.aqarati.property.service;
 import com.aqarati.property.client.ImageServiceClient;
 import com.aqarati.property.exception.NotFoundException;
 import com.aqarati.property.model.PropertyImage;
+import com.aqarati.property.repository.ElasticPropertyRepository;
 import com.aqarati.property.repository.PropertyImageRepositorty;
 import com.aqarati.property.repository.PropertyRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import com.aqarati.property.exception.InvalidJwtAuthenticationException;
 import com.aqarati.property.model.Property;
@@ -23,6 +25,7 @@ import java.util.List;
 public class PropertyService {
 
     private final PropertyRepository propertyRepository;
+    private final ElasticPropertyRepository elasticPropertyRepository;
     private final PropertyImageRepositorty propertyImageRepositorty;
     private final ImageServiceClient imageServiceClient;
     private final JwtTokenUtil jwtTokenUtil;

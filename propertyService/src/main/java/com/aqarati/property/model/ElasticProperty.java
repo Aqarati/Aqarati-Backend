@@ -4,37 +4,33 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
-@Entity
-@Table(name = "property")
+@Document(indexName = "property" ,createIndex = true)
 @Setter@Getter@Builder
 @AllArgsConstructor@NoArgsConstructor
-public class Property implements Serializable {
+public class ElasticProperty implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Field(name = "name")
     private String name;
 
-    @Column(name = "description")
+    @Field(name = "description")
     private String description;
 
-    @Column(name = "price", nullable = false)
+    @Field(name = "price")
     private Double price;
 
-    @Column(name = "user_id",nullable = false)
+    @Field(name = "user_id")
     private String userId;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
-    private List<PropertyImage> propertyImages = new ArrayList<>();
-
-    @Column(name = "created_time")
     @JsonIgnore
     @Builder.Default
     private Date createdTime=new Date();
