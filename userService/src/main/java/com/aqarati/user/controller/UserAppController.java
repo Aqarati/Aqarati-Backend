@@ -1,5 +1,6 @@
 package com.aqarati.user.controller;
 
+import com.aqarati.user.exception.InvalidImageException;
 import com.aqarati.user.request.UserUpdateRequest;
 import com.aqarati.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +26,7 @@ public class UserAppController {
         return userService.updateUser(request,userUpdateRequest);
     }
     @PutMapping("/profile/image")
-    public UserApp updateUserImage(HttpServletRequest request, @RequestParam("profile-image")MultipartFile image) throws  InvalidJwtAuthenticationException {
+    public UserApp updateUserImage(HttpServletRequest request, @RequestParam("profile-image")MultipartFile image) throws InvalidJwtAuthenticationException, InvalidImageException {
         return userService.updateUserImage(request,image);
     }
 }

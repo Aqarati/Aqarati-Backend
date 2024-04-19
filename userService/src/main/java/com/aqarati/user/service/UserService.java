@@ -1,6 +1,7 @@
 package com.aqarati.user.service;
 
 
+import com.aqarati.user.exception.InvalidImageException;
 import com.aqarati.user.publisher.Publisher;
 import com.aqarati.user.request.UserUpdateRequest;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,9 @@ import com.aqarati.user.model.UserApp;
 import com.aqarati.user.repository.UserRepository;
 import com.aqarati.user.util.JwtTokenUtil;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -20,6 +24,8 @@ public class UserService {
     private final ImageServiceClient imageServiceClient;
     private final JwtTokenUtil jwtTokenUtil;
     private final Publisher publisher;
+    private final List<String> ALLOWED_IMAGE_TYPES = Arrays.asList("image/jpeg", "image/png");
+
 
     public UserApp getInformaiton(HttpServletRequest request) throws InvalidJwtAuthenticationException {
         var token = jwtTokenUtil.resolveToken(request);
@@ -41,10 +47,21 @@ public class UserService {
         }
         throw new InvalidJwtAuthenticationException("invalid JWT");
     }
-    public UserApp updateUserImage(HttpServletRequest request, MultipartFile image) throws InvalidJwtAuthenticationException {
+    public UserApp updateUserImage(HttpServletRequest request, MultipartFile image) throws InvalidJwtAuthenticationException,InvalidImageException {
         var token = jwtTokenUtil.resolveToken(request);
         var userEmail = jwtTokenUtil.getEmail(token);
         if (jwtTokenUtil.validateToken(token)) {
+            if (image.isEmpty()) {
+                throw new InvalidImageException("Please select a file to upload");
+            }
+
+            if (image.getSize() > 15 * 1024 * 1024) { // 15MB
+                throw new InvalidImageException("File size exceeds the limit of 15MB");
+            }
+
+            if (!ALLOWED_IMAGE_TYPES.contains(image.getContentType())) {
+                throw new InvalidImageException("Only JPEG and PNG images are allowed");
+            }
             var x = userRepository.findByEmail(userEmail).orElseThrow();
 //            var imageUrl =imageServiceClient.uploadImage(image,"profile-image",x.getId());
             publisher.publishImageChunks(image,"profile-image",x.getId());
