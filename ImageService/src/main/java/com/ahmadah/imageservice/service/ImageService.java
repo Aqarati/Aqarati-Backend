@@ -69,6 +69,31 @@ public class ImageService {
             return null;
         }
     }
+    public String SqsputObject(MultipartFile image,String folderName,String imageName)throws InvalidImageException{
+        if (image.isEmpty()) {
+            throw new InvalidImageException("Please select a file to upload");
+        }
+
+        if (image.getSize() > 15 * 1024 * 1024) { // 15MB
+            throw new InvalidImageException("File size exceeds the limit of 15MB");
+        }
+
+        if (!ALLOWED_IMAGE_TYPES.contains(image.getContentType())) {
+            throw new InvalidImageException("Only JPEG and PNG images are allowed");
+        }
+        try {
+            String ext= ".%s".formatted(image.getContentType().substring(6));
+            String key =folderName+"/"+imageName+ext;
+            File file = convertMultiPartFileToFile(image);
+            amazonS3.putObject(new PutObjectRequest(bucketName, key,  file));
+            file.delete(); // Delete the temporary file after uploading
+            return "https://aqarati-app.s3.me-south-1.amazonaws.com/"+folderName+"/"+imageName+ext;
+        } catch (IOException | SdkClientException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 
     public File convertMultiPartFileToFile(MultipartFile multipartFile) throws IOException {
         String originalFilename = multipartFile.getOriginalFilename();
