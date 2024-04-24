@@ -10,7 +10,7 @@ services:
       - aqarati-network
   gateway:
     hostname: gateway
-    image: ahmd66699/aqarati-gateway:v0.01
+    image: ahmd66699/aqarati-gateway:0.0.2-SNAPSHOT
     ports:
       - "8888:8888"
     networks:
@@ -35,11 +35,13 @@ services:
     networks:
       - aqarati-network
   property-service:
-    image: ahmd66699/aqarati-property-service:v0.01
+    image: ahmd66699/aqarati-property-service:v0.02
     ports:
       - "0:8666"
     networks:
       - aqarati-network
+    depends_on:
+      - elasticsearch
   document-service:
     image: ahmd66699/aqarati-document-service:v0.01
     ports:
@@ -66,7 +68,6 @@ services:
       - http.host=0.0.0.0
       - transport.host=0.0.0.0
       - xpack.security.enabled=false
-#      - xpack.monitoring.enabled=false
       - cluster.name=elasticsearch
       - bootstrap.memory_lock=true
     networks:
