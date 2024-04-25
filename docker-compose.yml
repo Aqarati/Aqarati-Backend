@@ -23,19 +23,19 @@ services:
       - aqarati-network
 
   auth-service:
-    image: ahmd66699/aqarati-auth-service:v0.01
+    image: ahmd66699/aqarati-auth-service:0.02-SNAPSHOT
     ports:
       - "0:8443"
     networks:
       - aqarati-network
   user-service:
-    image: ahmd66699/aqarati-user-service:v0.01
+    image: ahmd66699/aqarati-user-service:0.02-SNAPSHOT
     ports:
       - "0:8444"
     networks:
       - aqarati-network
   property-service:
-    image: ahmd66699/aqarati-property-service:v0.02
+    image: ahmd66699/aqarati-property-service:0.02-SNAPSHOT
     ports:
       - "0:8666"
     networks:
@@ -43,13 +43,13 @@ services:
     depends_on:
       - elasticsearch
   document-service:
-    image: ahmd66699/aqarati-document-service:v0.01
+    image: ahmd66699/aqarati-document-service:0.02-SNAPSHOT
     ports:
       - "0:8665"
     networks:
       - aqarati-network
   image-service:
-    image: ahmd66699/aqarati-image-service:v0.01
+    image: ahmd66699/aqarati-image-service:0.0.2-SNAPSHOT
     ports:
       - "0:7654"
     networks:
