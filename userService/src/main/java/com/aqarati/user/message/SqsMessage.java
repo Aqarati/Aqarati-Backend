@@ -14,6 +14,7 @@ import java.util.Date;
 public class SqsMessage implements Serializable {
     private String id;
     private String folderName;
+    private String fileExt;
     private int chunkIndex;
     private int totalChunks;
     private String imageChunk;

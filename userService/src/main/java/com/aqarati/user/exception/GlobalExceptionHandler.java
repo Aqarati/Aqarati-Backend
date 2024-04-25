@@ -15,9 +15,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ExceptionResponse(ex.getMessage(),message));
     }
     @ExceptionHandler(InvalidImageException.class)
-    public ResponseEntity<ExceptionResponse> handleInvalidJwtAuthenticationException(InvalidImageException ex) {
+    public ResponseEntity<ExceptionResponse> handleInvalidImageExceptionException(InvalidImageException ex) {
         final String message="";
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ExceptionResponse(ex.getMessage(),message));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponse(ex.getMessage(),message));
     }
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity handleMaxSizeException(MaxUploadSizeExceededException exc) {

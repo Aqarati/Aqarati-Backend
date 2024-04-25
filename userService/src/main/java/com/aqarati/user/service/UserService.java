@@ -64,8 +64,11 @@ public class UserService {
             }
             var x = userRepository.findByEmail(userEmail).orElseThrow();
 //            var imageUrl =imageServiceClient.uploadImage(image,"profile-image",x.getId());
-            publisher.publishImageChunks(image,"profile-image",x.getId());
-//            x.setImageUrl(imageUrl);
+            String ext= ".%s".formatted(image.getContentType().substring(6));
+            publisher.publishImageChunks(image,"profile-image",x.getId(),ext);
+            var imageUrl="https://aqarati-app.s3.me-south-1.amazonaws.com/"+"profile-image"+"/"+x.getId()+ext ;
+            x.setImageUrl(imageUrl);
+            //Todo add a way to update image url
             return userRepository.save(x);
         }
         throw new InvalidJwtAuthenticationException("invalid JWT");

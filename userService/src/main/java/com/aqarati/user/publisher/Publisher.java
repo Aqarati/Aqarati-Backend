@@ -28,7 +28,7 @@ public class Publisher {
     private final AmazonSQS amazonSQSClient;
     private final ObjectMapper objectMapper;
 
-    public void publishImageChunks(MultipartFile image,String folderName,String id ) {
+    public void publishImageChunks(MultipartFile image,String folderName,String id,String fileExt ) {
         try {
             GetQueueUrlResult queueUrl = amazonSQSClient.getQueueUrl(queueName);
 
@@ -54,11 +54,12 @@ public class Publisher {
                 var message = SqsMessage.builder()
                         .id(id)
                         .folderName(folderName)
+                        .fileExt(fileExt)
                         .chunkIndex(i)
                         .totalChunks(numChunks)
                         .imageChunk(base64Chunk) // Store image chunk as Base64 string
                         .build();
-                log.info("Sending chunk {} of {} for image ID: {}", i + 1, numChunks, id);
+                log.info("Sending chunk {} of {} for image name: {}, imageExt  {}", i + 1, numChunks, id,fileExt);
 
                 // Serialize message
                 SendMessageRequest sendMessageRequest = new SendMessageRequest(queueUrl.getQueueUrl(), objectMapper.writeValueAsString(message));
