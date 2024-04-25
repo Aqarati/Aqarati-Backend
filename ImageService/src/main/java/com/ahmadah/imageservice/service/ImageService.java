@@ -15,7 +15,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.net.FileNameMap;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -74,9 +76,8 @@ public class ImageService {
     public String sqsPutObject(byte[] bImage,String folderName,String imageName,String imageExt){
 
         try {
-            File file = convertByteArrayToFile(bImage,imageName);
-
             String ext= imageExt;
+            File file = convertByteArrayToFile(bImage,imageName+ext);
             String key =folderName+"/"+imageName+ext;
             log.info("object key in sqsPutObject : {}",key);
             amazonS3.putObject(new PutObjectRequest(bucketName, key,  file));
@@ -102,6 +103,7 @@ public class ImageService {
     }
     public File convertByteArrayToFile(byte[] bytes, String filePath) throws IOException {
         File file = new File(filePath);
+
         try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(bytes);
 //            fos.flush();
