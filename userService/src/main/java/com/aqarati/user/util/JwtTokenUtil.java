@@ -31,19 +31,15 @@ public class JwtTokenUtil {
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7, bearerToken.length());
         }
-        throw new InvalidJwtAuthenticationException("Can`t Reslove Token");
+        throw new InvalidJwtAuthenticationException("Can`t Resolve Token");
     }
 
-    public boolean validateToken(String token) {
-        try {
+    public boolean validateToken(String token)throws InvalidJwtAuthenticationException {
+
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             if (claims.getBody().getExpiration().before(new Date())) {
-                return false;
+                throw new InvalidJwtAuthenticationException("jwt expired");
             }
             return true;
-        } catch (Exception ex) {
-            System.out.println(ex);
-            return false;
-        }
     }
 }
