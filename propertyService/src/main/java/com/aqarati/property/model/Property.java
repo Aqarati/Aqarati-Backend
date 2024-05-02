@@ -31,7 +31,7 @@ public class Property implements Serializable {
     private String userId;
 
     @Builder.Default
-    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<PropertyImage> propertyImages = new ArrayList<>();
 
     @Column(name = "created_time")
