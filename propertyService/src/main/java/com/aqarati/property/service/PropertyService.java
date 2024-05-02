@@ -42,6 +42,12 @@ public class PropertyService {
         return x;
     }
 
+    @Cacheable(value = "Property",key ="#id")
+    public Property getPropertyById(Long id) throws NotFoundException{
+        var x= propertyRepository.findById(id).orElseThrow(()->new NotFoundException("Not Found"));
+        return x;
+    }
+
     @CachePut(cacheNames = "Property's")
     public Property createProperty(HttpServletRequest request, CreatePropertyRequest propertyRequest) throws InvalidJwtAuthenticationException {
         var token = jwtTokenUtil.resolveToken(request);
