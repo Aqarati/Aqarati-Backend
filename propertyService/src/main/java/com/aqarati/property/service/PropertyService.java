@@ -9,6 +9,9 @@ import com.aqarati.property.repository.PropertyRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import com.aqarati.property.exception.InvalidJwtAuthenticationException;
 import com.aqarati.property.model.Property;
@@ -30,14 +33,16 @@ public class PropertyService {
     private final ImageServiceClient imageServiceClient;
     private final JwtTokenUtil jwtTokenUtil;
 
-    public List<Property> getAll(){
 
+    @Cacheable(value = "Property's")
+    public List<Property> getAll(){
       var x= propertyRepository.findAll();
         System.out.println("\n \n ");
         System.out.println(x.toString());
         return x;
     }
 
+    @CachePut(cacheNames = "Property's")
     public Property createProperty(HttpServletRequest request, CreatePropertyRequest propertyRequest) throws InvalidJwtAuthenticationException {
         var token = jwtTokenUtil.resolveToken(request);
         if (jwtTokenUtil.validateToken(token)) {
@@ -51,6 +56,8 @@ public class PropertyService {
             }
         throw new InvalidJwtAuthenticationException("invalid jwt");
     }
+
+    @CachePut(cacheNames = "Property's")
     public Property updateProperty(HttpServletRequest request, Property property) throws InvalidJwtAuthenticationException, NotFoundException {
         var token = jwtTokenUtil.resolveToken(request);
         if (!jwtTokenUtil.validateToken(token)) {
@@ -65,6 +72,7 @@ public class PropertyService {
         p.setDescription((property.getDescription() != null)? property.getDescription():p.getDescription());
         return propertyRepository.save(p);
     }
+    @CacheEvict(cacheNames = "Property's")
     public Property deleteProperty (HttpServletRequest request,Long propertyId) throws InvalidJwtAuthenticationException,NotFoundException{
         var token = jwtTokenUtil.resolveToken(request);
         if (!jwtTokenUtil.validateToken(token)) {
@@ -77,7 +85,7 @@ public class PropertyService {
         propertyRepository.delete(p);
         return p;
     }
-
+    @CacheEvict(cacheNames = "Property's")
     public Property updatePropertyImage(HttpServletRequest request,List<MultipartFile> propertyImages,long propertyId) throws InvalidJwtAuthenticationException,NotFoundException {
         var token = jwtTokenUtil.resolveToken(request);
         if (!jwtTokenUtil.validateToken(token)) {
