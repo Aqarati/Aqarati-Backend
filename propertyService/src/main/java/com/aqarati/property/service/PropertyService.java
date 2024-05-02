@@ -42,6 +42,7 @@ public class PropertyService {
         return x;
     }
 
+    @CachePut(cacheNames = "Property's")
     public Property createProperty(HttpServletRequest request, CreatePropertyRequest propertyRequest) throws InvalidJwtAuthenticationException {
         var token = jwtTokenUtil.resolveToken(request);
         if (jwtTokenUtil.validateToken(token)) {
