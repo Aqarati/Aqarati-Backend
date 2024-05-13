@@ -29,7 +29,7 @@ services:
     networks:
       - aqarati-network
   user-service:
-    image: ahmd66699/aqarati-user-service:0.0.2-SNAPSHOT
+    image: ahmd66699/aqarati-user-service:0.0.3-SNAPSHOT
     ports:
       - "0:8444"
     networks:

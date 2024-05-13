@@ -10,6 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.aqarati.user.exception.InvalidJwtAuthenticationException;
 import com.aqarati.user.model.UserApp;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -20,7 +22,18 @@ public class UserAppController {
     public UserApp getUserInformation(HttpServletRequest request) throws InvalidJwtAuthenticationException {
         return userService.getInformaiton(request);
     }
-
+    @GetMapping("/favourite")
+    public List<Long> getUserFavouriteProeperty(HttpServletRequest request) throws InvalidJwtAuthenticationException {
+        return userService.getUserFavouriteProeperty(request);
+    }
+    @PostMapping("/favourite")
+    public List<Long> saveUserFavouriteProeperty(HttpServletRequest request,@RequestParam Long id) throws InvalidJwtAuthenticationException {
+        return userService.saveUserFavouriteProperty(request,id);
+    }
+    @DeleteMapping("/favourite")
+    public List<Long> deleteUserFavouriteProeperty(HttpServletRequest request,@RequestParam Long id) throws InvalidJwtAuthenticationException {
+        return userService.deleteUserFavouriteProperty(request,id);
+    }
     @PutMapping("/profile")
     public UserApp updateUserInformation(HttpServletRequest request, @RequestBody UserUpdateRequest userUpdateRequest) throws InvalidJwtAuthenticationException {
         return userService.updateUser(request,userUpdateRequest);

@@ -74,5 +74,40 @@ public class UserService {
         throw new InvalidJwtAuthenticationException("invalid JWT");
     }
 
+    public List<Long> getUserFavouriteProeperty(HttpServletRequest request) throws InvalidJwtAuthenticationException{
+        var token = jwtTokenUtil.resolveToken(request);
+        var userEmail = jwtTokenUtil.getEmail(token);
+        if (jwtTokenUtil.validateToken(token)) {
+            var user =userRepository.findByEmail(userEmail).orElseThrow();
+            return user.getFavouriteProperty();
+        }
+        throw new InvalidJwtAuthenticationException("invalid JWT ");
+    }
 
+    public List<Long> saveUserFavouriteProperty(HttpServletRequest request,Long propertyId) throws InvalidJwtAuthenticationException{
+        var token = jwtTokenUtil.resolveToken(request);
+        var userEmail = jwtTokenUtil.getEmail(token);
+        if (jwtTokenUtil.validateToken(token)) {
+            var user =userRepository.findByEmail(userEmail).orElseThrow();
+            var fav=user.getFavouriteProperty();
+            fav.add(propertyId);
+            userRepository.save(user);
+            return user.getFavouriteProperty();
+        }
+        throw new InvalidJwtAuthenticationException("invalid JWT ");
+    }
+
+
+    public List<Long> deleteUserFavouriteProperty(HttpServletRequest request,Long propertyId) throws InvalidJwtAuthenticationException{
+        var token = jwtTokenUtil.resolveToken(request);
+        var userEmail = jwtTokenUtil.getEmail(token);
+        if (jwtTokenUtil.validateToken(token)) {
+            var user =userRepository.findByEmail(userEmail).orElseThrow();
+            var fav=user.getFavouriteProperty();
+            fav.remove(propertyId);
+            userRepository.save(user);
+            return user.getFavouriteProperty();
+        }
+        throw new InvalidJwtAuthenticationException("invalid JWT ");
+    }
 }
