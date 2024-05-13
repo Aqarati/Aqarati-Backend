@@ -21,7 +21,6 @@ public class PropertyController {
     private final PropertyService propertyService;
     private final PropertyImageRepositorty propertyImageRepositorty;
 
-
     @GetMapping({"/",""})
     public List<Property> getAllProperty(){
         return propertyService.getAll();
@@ -61,5 +60,6 @@ public class PropertyController {
     public PropertyImage activatePropertyImageVr(@PathVariable("id")Long imageId) throws NotFoundException {
         return propertyService.activatePropertyImageVr(imageId);
     }
+
 
 }

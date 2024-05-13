@@ -31,6 +31,10 @@ public class ElasticProperty implements Serializable {
     @Field(name = "user_id")
     private String userId;
 
+    @Builder.Default
+    @Field
+    private List<PropertyImage> propertyImages = new ArrayList<>();
+
     @JsonIgnore
     @Builder.Default
     private Date createdTime=new Date();

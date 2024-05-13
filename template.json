@@ -1,13 +1,47 @@
 {
   "index_patterns": ["property*"],
+  "settings": {},
   "mappings": {
     "properties": {
-      "id": {"type": "long"},
-      "name": {"type": "text"},
-      "description": {"type": "text"},
-      "price": {"type": "double"},
-      "user_id": {"type": "text"},
-      "created_time": {"type": "date"}
+      "property": {
+        "properties": {
+          "id": {
+            "type": "long"
+          },
+          "name": {
+            "type": "text"
+          },
+          "description": {
+            "type": "text"
+          },
+          "price": {
+            "type": "double"
+          },
+          "userId": {
+            "type": "keyword"
+          },
+          "createdTime": {
+            "type": "date"
+          },
+          "propertyImages": {
+            "type": "nested",
+            "properties": {
+              "id": {
+                "type": "long"
+              },
+              "imgUrl": {
+                "type": "text"
+              },
+              "vr": {
+                "type": "boolean"
+              },
+              "vr_url": {
+                "type": "text"
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
