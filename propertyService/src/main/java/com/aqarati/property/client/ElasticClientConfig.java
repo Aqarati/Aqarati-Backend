@@ -12,7 +12,7 @@ public class ElasticClientConfig extends ElasticsearchConfiguration  {
     private final String password="";
 
     @Value("${elastic.host}")
-    private final String hostAndPort="localhost:9200";
+    private String hostAndPort;
 
     @Override
     public ClientConfiguration clientConfiguration() {
