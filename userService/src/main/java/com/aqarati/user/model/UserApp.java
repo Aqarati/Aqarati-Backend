@@ -7,6 +7,7 @@ import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class UserApp  {
     private String firstName;
     private String lastName;
     private String phoneNumber;
+    private List<Long> favouriteProperty;
     private String imageUrl;
     @JsonIgnore
     private List<String> role;
@@ -32,6 +34,7 @@ public class UserApp  {
 
     public UserApp() {
         this.createdDate = new Date();
+        this.favouriteProperty = new ArrayList<>();
     }
 
     public UserApp(String email, String password) {
