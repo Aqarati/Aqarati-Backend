@@ -30,6 +30,10 @@ public class PropertyController {
     public Property getPropertyById(@PathVariable("id") Long id) throws NotFoundException {
         return propertyService.getPropertyById(id);
     }
+    @GetMapping("/properties")
+    public List<Property> getPropertiesById(@RequestBody List<Long>propertysId) throws NotFoundException {
+        return propertyService.getPropertiesById(propertysId);
+    }
 
     @PostMapping({"/",""})
     public Property createProperty(HttpServletRequest request, @RequestBody CreatePropertyRequest propertyRequest) throws InvalidJwtAuthenticationException {
