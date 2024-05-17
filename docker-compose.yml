@@ -35,7 +35,7 @@ services:
     networks:
       - aqarati-network
   property-service:
-    image: ahmd66699/aqarati-property-service:0.04-SNAPSHOT
+    image: ahmd66699/aqarati-property-service:0.05-SNAPSHOT
     ports:
       - "0:8666"
     networks:

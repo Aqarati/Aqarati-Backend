@@ -5,6 +5,7 @@ import com.aqarati.property.model.Property;
 import com.aqarati.property.model.PropertyImage;
 import com.aqarati.property.repository.PropertyImageRepositorty;
 import com.aqarati.property.request.CreatePropertyRequest;
+import com.aqarati.property.request.GetPropertiesIDsRequest;
 import com.aqarati.property.service.PropertyService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +32,8 @@ public class PropertyController {
         return propertyService.getPropertyById(id);
     }
     @GetMapping("/properties")
-    public List<Property> getPropertiesById(@RequestBody List<Long>propertysId) throws NotFoundException {
-        return propertyService.getPropertiesById(propertysId);
+    public List<Property> getPropertiesById(@RequestBody GetPropertiesIDsRequest getPropertiesIDsRequest) throws NotFoundException {
+        return propertyService.getPropertiesById(getPropertiesIDsRequest.getPropertiesId());
     }
 
     @PostMapping({"/",""})

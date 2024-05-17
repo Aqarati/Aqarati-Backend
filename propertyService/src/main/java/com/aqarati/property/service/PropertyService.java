@@ -41,8 +41,8 @@ public class PropertyService {
         System.out.println(x.toString());
         return x;
     }
-    public  List<Property> getPropertiesById(List<Long> propertysId){
-        return propertyRepository.findAllById(propertysId);
+    public  List<Property> getPropertiesById(List<Long>propertiesId){
+        return propertyRepository.findAllById(propertiesId);
     }
     @Cacheable(value = "Property",key ="#id")
     public Property getPropertyById(Long id) throws NotFoundException{
