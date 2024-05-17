@@ -32,8 +32,8 @@ public class PropertyController {
         return propertyService.getPropertyById(id);
     }
     @GetMapping("/properties")
-    public List<Property> getPropertiesById(@RequestBody GetPropertiesIDsRequest getPropertiesIDsRequest) throws NotFoundException {
-        return propertyService.getPropertiesById(getPropertiesIDsRequest.getPropertiesId());
+    public List<Property> getPropertiesById(@RequestParam List<Long>  PropertiesIDs) throws NotFoundException {
+        return propertyService.getPropertiesById(PropertiesIDs);
     }
 
     @PostMapping({"/",""})
