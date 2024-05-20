@@ -20,7 +20,11 @@ public class UserAppController {
 
     @GetMapping("/profile")
     public UserApp getUserInformation(HttpServletRequest request) throws InvalidJwtAuthenticationException {
-        return userService.getInformaiton(request);
+        return userService.getInformation(request);
+    }
+    @GetMapping("/profile/{id}")
+    public UserApp getUserInformation(@PathVariable String id) throws InvalidJwtAuthenticationException {
+        return userService.getInformation(id);
     }
     @GetMapping("/favourite")
     public List<Long> getUserFavouriteProeperty(HttpServletRequest request) throws InvalidJwtAuthenticationException {

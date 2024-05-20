@@ -27,7 +27,7 @@ public class UserService {
     private final List<String> ALLOWED_IMAGE_TYPES = Arrays.asList("image/jpeg", "image/png");
 
 
-    public UserApp getInformaiton(HttpServletRequest request) throws InvalidJwtAuthenticationException {
+    public UserApp getInformation(HttpServletRequest request) throws InvalidJwtAuthenticationException {
         var token = jwtTokenUtil.resolveToken(request);
         var userEmail = jwtTokenUtil.getEmail(token);
         if (jwtTokenUtil.validateToken(token)) {
@@ -35,7 +35,9 @@ public class UserService {
         }
         throw new InvalidJwtAuthenticationException("invalid JWT ");
     }
-
+    public UserApp getInformation(String id) {
+            return userRepository.findById(id).orElseThrow();
+    }
     public UserApp updateUser(HttpServletRequest request, UserUpdateRequest userUpdateRequest) throws InvalidJwtAuthenticationException {
         var token = jwtTokenUtil.resolveToken(request);
         var userEmail = jwtTokenUtil.getEmail(token);
