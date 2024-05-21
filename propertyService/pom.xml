@@ -9,7 +9,7 @@
 		<relativePath/>
 	</parent>
 	<artifactId>propertyService</artifactId>
-	<version>0.06-SNAPSHOT</version>
+	<version>0.08-SNAPSHOT</version>
 	<name>property-service</name>
 	<description>propertyService</description>
 

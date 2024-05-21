@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -40,6 +41,28 @@ public class PropertyService {
         System.out.println("\n \n ");
         System.out.println(x.toString());
         return x;
+    }
+
+
+    @Cacheable(value = "Property's")
+    public List<Property> getAllSortedByCreatedTime(){
+        var properties = propertyRepository.findAll();
+        properties.sort(Comparator.comparing(Property::getCreatedTime));
+        return properties;
+    }
+    @Cacheable(value = "Property's")
+    public List<Property> getAllSortedByPrice(){
+        var properties = propertyRepository.findAll();
+        properties.sort(Comparator.comparing(Property::getPrice));
+        return properties;
+    }
+
+    public List<Property> getAll(HttpServletRequest request) throws InvalidJwtAuthenticationException {
+        var token = jwtTokenUtil.resolveToken(request);
+        if (jwtTokenUtil.validateToken(token)) {
+            return propertyRepository.findAllByUserId(jwtTokenUtil.getUserId(token));
+        }
+        throw new InvalidJwtAuthenticationException("invalid jwt");
     }
     public  List<Property> getPropertiesById(List<Long>propertiesId){
         return propertyRepository.findAllById(propertiesId);

@@ -27,6 +27,11 @@ public class Property implements Serializable {
     @Column(name = "price", nullable = false)
     private Double price;
 
+    @Builder.Default
+    @Column(name = "verified", nullable = false)
+    private boolean verified = false;
+
+
     @Column(name = "user_id",nullable = false)
     private String userId;
 

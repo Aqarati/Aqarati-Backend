@@ -23,8 +23,21 @@ public class PropertyController {
     private final PropertyImageRepositorty propertyImageRepositorty;
 
     @GetMapping({"/",""})
-    public List<Property> getAllProperty(){
+    public List<Property> getAllProperty(@RequestParam(required = false) String sortBy) {
+        if (sortBy != null && !sortBy.isEmpty()) {
+            if (sortBy.equalsIgnoreCase("createdTime")) {
+                return propertyService.getAllSortedByCreatedTime();
+            } else if (sortBy.equalsIgnoreCase("price")) {
+                return propertyService.getAllSortedByPrice();
+            }
+        }
+        // Default behavior: Return all properties without sorting
         return propertyService.getAll();
+    }
+
+    @GetMapping("/my")
+    public List<Property> getAllProperty(HttpServletRequest request) throws InvalidJwtAuthenticationException {
+        return propertyService.getAll(request);
     }
 
     @GetMapping("/{id}")
