@@ -29,7 +29,7 @@ import java.util.List;
 public class PropertyService {
 
     private final PropertyRepository propertyRepository;
-    private final ElasticPropertyRepository elasticPropertyRepository;
+//    private final ElasticPropertyRepository elasticPropertyRepository;
     private final PropertyImageRepositorty propertyImageRepositorty;
     private final ImageServiceClient imageServiceClient;
     private final JwtTokenUtil jwtTokenUtil;

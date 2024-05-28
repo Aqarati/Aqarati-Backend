@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PropertySearchService {
-    private final ElasticPropertyRepository elasticPropertyRepository;
+//    private final ElasticPropertyRepository elasticPropertyRepository;
     private final PropertyRepository propertyRepository;
 
 //    public List<ElasticProperty> searchPropertyByKeyword(String keyword){
