@@ -3,12 +3,12 @@ package com.aqarati.property.service;
 import com.aqarati.property.client.ImageServiceClient;
 import com.aqarati.property.exception.NotFoundException;
 import com.aqarati.property.model.PropertyImage;
-import com.aqarati.property.repository.ElasticPropertyRepository;
-import com.aqarati.property.repository.PropertyImageRepositorty;
+import com.aqarati.property.repository.PropertyImageRepository;
 import com.aqarati.property.repository.PropertyRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -17,20 +17,19 @@ import com.aqarati.property.exception.InvalidJwtAuthenticationException;
 import com.aqarati.property.model.Property;
 import com.aqarati.property.request.CreatePropertyRequest;
 import com.aqarati.property.util.JwtTokenUtil;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Comparator;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PropertyService {
 
     private final PropertyRepository propertyRepository;
 //    private final ElasticPropertyRepository elasticPropertyRepository;
-    private final PropertyImageRepositorty propertyImageRepositorty;
+    private final PropertyImageRepository propertyImageRepository;
     private final ImageServiceClient imageServiceClient;
     private final JwtTokenUtil jwtTokenUtil;
 
@@ -112,7 +111,7 @@ public class PropertyService {
         }
         for (var image : propertyImages) {
             var propertyImage = PropertyImage.builder().property(property).build();
-            propertyImageRepositorty.save(propertyImage);
+            propertyImageRepository.save(propertyImage);
             String imageUrl = null;
             try {
                 System.out.println("============================ \n");
@@ -121,32 +120,35 @@ public class PropertyService {
                 System.out.println(property);
                 System.out.println(propertyImage);
                 propertyImage.setImgUrl(imageUrl);
-                propertyImageRepositorty.save(propertyImage);
+                propertyImageRepository.save(propertyImage);
             } catch (Exception ex) {
                 ex.printStackTrace();
-                propertyImageRepositorty.deleteById(propertyImage.getId());
+                propertyImageRepository.deleteById(propertyImage.getId());
             }
         }
             return property;
         }
+    @CacheEvict(value = "Properties", allEntries = true)
     public PropertyImage activatePropertyImageVr(Long imageId) throws NotFoundException {
-        var image =propertyImageRepositorty.findById(imageId).orElseThrow(()->new NotFoundException("property with that id not found"));
+        var image = propertyImageRepository.findById(imageId).orElseThrow(()->new NotFoundException("property with that id not found"));
         image.setVr(true);
         int lastSlashIndex = image.getImgUrl().lastIndexOf('/');
         String fileName = image.getImgUrl().substring(lastSlashIndex + 1);
         String imageUrl="https://master.d10hk0k70g00y4.amplifyapp.com/"+image.getProperty().getId()+"/"+fileName;
         image.setVr_url(imageUrl);
-        return propertyImageRepositorty.save(image);
+        return propertyImageRepository.save(image);
     }
+    @CacheEvict(value = "Properties", allEntries = true)
     public PropertyImage deactivatePropertyImageVr(Long imageId) throws NotFoundException {
-        var image =propertyImageRepositorty.findById(imageId).orElseThrow(()->new NotFoundException("property with that id not found"));
+        var image = propertyImageRepository.findById(imageId).orElseThrow(()->new NotFoundException("property with that id not found"));
         image.setVr(false);
         int lastSlashIndex = image.getImgUrl().lastIndexOf('/');
         String fileName = image.getImgUrl().substring(lastSlashIndex + 1);
         String imageUrl="https://master.d10hk0k70g00y4.amplifyapp.com/"+image.getProperty().getId()+"/"+fileName;
         image.setVr_url("");
-        return propertyImageRepositorty.save(image);
+        return propertyImageRepository.save(image);
     }
+
     public  List<Property> getPropertiesById(List<Long>propertiesId){
         return propertyRepository.findAllById(propertiesId);
     }
@@ -157,18 +159,32 @@ public class PropertyService {
         }
         throw new InvalidJwtAuthenticationException("invalid jwt");
     }
-    @CacheEvict(value = "Properties", allEntries = true)
-    public PropertyImage deletePropertyImage (HttpServletRequest request,Long propertyImageId) throws InvalidJwtAuthenticationException,NotFoundException{
+    @Transactional
+//    @CacheEvict(value = "Properties", allEntries = true)
+    public PropertyImage deletePropertyImage(HttpServletRequest request, Long propertyImageId)
+            throws InvalidJwtAuthenticationException, NotFoundException {
         var token = jwtTokenUtil.resolveToken(request);
         if (!jwtTokenUtil.validateToken(token)) {
-            throw new InvalidJwtAuthenticationException("invalid jwt");
+            throw new InvalidJwtAuthenticationException("Invalid JWT");
         }
-        var p =propertyImageRepositorty.findById(propertyImageId).orElseThrow(()-> new NotFoundException("property with that id not found"));
-        //Todo: check the user Authority
-//        if(!(jwtTokenUtil.getUserId(token).equals(p.getUserId()))){
-//            throw new NotFoundException("property does not belong to that user");
-//        }
-        propertyImageRepositorty.delete(p);
-        return p;
+        var propertyImage = propertyImageRepository.findById(propertyImageId)
+                .orElseThrow(() -> new NotFoundException("Property image with that ID not found"));
+
+        // Ensure that the property image belongs to the user making the request
+        var userIdFromToken = jwtTokenUtil.getUserId(token);
+        var property = propertyImage.getProperty();
+        if (!property.getUserId().equals(userIdFromToken)) {
+            throw new NotFoundException("Property image does not belong to the user");
+        }
+
+        log.info("Deleting Property Image");
+        log.info(propertyImage.toString());
+        property.getPropertyImages().remove(propertyImage);
+        propertyRepository.save(property);
+        propertyImageRepository.deleteById(propertyImage.getId());
+
+        boolean exists = propertyImageRepository.existsById(propertyImage.getId());
+        log.info("PropertyImage exists after deletion: " + exists);
+        return propertyImage;
     }
 }

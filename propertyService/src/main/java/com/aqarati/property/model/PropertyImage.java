@@ -11,6 +11,7 @@ import java.io.Serializable;
 @Setter
 @Getter
 @Builder
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class PropertyImage implements Serializable {

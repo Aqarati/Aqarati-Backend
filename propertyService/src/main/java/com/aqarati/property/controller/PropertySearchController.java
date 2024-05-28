@@ -1,11 +1,9 @@
 package com.aqarati.property.controller;
 
 
-import com.aqarati.property.model.ElasticProperty;
 import com.aqarati.property.model.Property;
-import com.aqarati.property.repository.PropertyImageRepositorty;
+import com.aqarati.property.repository.PropertyImageRepository;
 import com.aqarati.property.service.PropertySearchService;
-import com.aqarati.property.service.PropertyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PropertySearchController {
     private final PropertySearchService propertySearchService;
-    private final PropertyImageRepositorty propertyImageRepositorty;
+    private final PropertyImageRepository propertyImageRepository;
 
 //    @GetMapping("/")
 //    public List<ElasticProperty> searchPropertyByKeyword(@RequestParam String keyword){

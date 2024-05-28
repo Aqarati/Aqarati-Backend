@@ -3,9 +3,8 @@ package com.aqarati.property.controller;
 import com.aqarati.property.exception.NotFoundException;
 import com.aqarati.property.model.Property;
 import com.aqarati.property.model.PropertyImage;
-import com.aqarati.property.repository.PropertyImageRepositorty;
+import com.aqarati.property.repository.PropertyImageRepository;
 import com.aqarati.property.request.CreatePropertyRequest;
-import com.aqarati.property.request.GetPropertiesIDsRequest;
 import com.aqarati.property.service.PropertyService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PropertyController {
     private final PropertyService propertyService;
-    private final PropertyImageRepositorty propertyImageRepositorty;
+    private final PropertyImageRepository propertyImageRepository;
 
     @GetMapping({"/",""})
     public List<Property> getAllProperty(@RequestParam(required = false) String sortBy) {
@@ -71,7 +70,7 @@ public class PropertyController {
 
     @GetMapping("/image")
     public List<PropertyImage> GetPropertyImage(){
-        return propertyImageRepositorty.findAll();
+        return propertyImageRepository.findAll();
     }
 
     @PutMapping("/image/active/{id}")

@@ -18,7 +18,9 @@ public class PropertySearchService {
 //    public List<ElasticProperty> searchPropertyByKeyword(String keyword){
 //        return elasticPropertyRepository.searchPropertyByKeyword(keyword);
 //    }
+
     public List<Property> searchPropertyByKeyword(String keyword){
         return propertyRepository.searchByKeyword(keyword);
     }
+
 }

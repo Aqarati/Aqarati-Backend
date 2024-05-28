@@ -1,10 +1,7 @@
 package com.aqarati.property;
 
-import com.aqarati.property.model.Property;
-import com.aqarati.property.model.PropertyImage;
-import com.aqarati.property.repository.PropertyImageRepositorty;
+import com.aqarati.property.repository.PropertyImageRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.dialect.function.array.ArrayToStringFunction;
 import org.springframework.boot.CommandLineRunner;
 import com.aqarati.property.repository.PropertyRepository;
 import org.springframework.stereotype.Component;
@@ -13,7 +10,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class Runner implements CommandLineRunner {
     private final PropertyRepository propertyRepository;
-    private final PropertyImageRepositorty propertyImageRepositorty;
+    private final PropertyImageRepository propertyImageRepository;
 
     @Override
     public void run(String... args) throws Exception {
