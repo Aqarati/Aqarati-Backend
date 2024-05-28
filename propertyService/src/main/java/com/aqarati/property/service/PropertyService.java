@@ -35,45 +35,30 @@ public class PropertyService {
     private final JwtTokenUtil jwtTokenUtil;
 
 
-    @Cacheable(value = "Property's")
+    @Cacheable(value = "Properties")
     public List<Property> getAll(){
       var x= propertyRepository.findAll();
         System.out.println("\n \n ");
         System.out.println(x.toString());
         return x;
     }
-
-
-    @Cacheable(value = "Property's")
+    @Cacheable(value = "Properties")
     public List<Property> getAllSortedByCreatedTime(){
         var properties = propertyRepository.findAll();
         properties.sort(Comparator.comparing(Property::getCreatedTime));
         return properties;
     }
-    @Cacheable(value = "Property's")
+    @Cacheable(value = "Properties")
     public List<Property> getAllSortedByPrice(){
         var properties = propertyRepository.findAll();
         properties.sort(Comparator.comparing(Property::getPrice));
         return properties;
     }
-
-    public List<Property> getAll(HttpServletRequest request) throws InvalidJwtAuthenticationException {
-        var token = jwtTokenUtil.resolveToken(request);
-        if (jwtTokenUtil.validateToken(token)) {
-            return propertyRepository.findAllByUserId(jwtTokenUtil.getUserId(token));
-        }
-        throw new InvalidJwtAuthenticationException("invalid jwt");
-    }
-    public  List<Property> getPropertiesById(List<Long>propertiesId){
-        return propertyRepository.findAllById(propertiesId);
-    }
-    @Cacheable(value = "Property",key ="#id")
+    @Cacheable(value = "Properties", key = "#id")
     public Property getPropertyById(Long id) throws NotFoundException{
-        var x= propertyRepository.findById(id).orElseThrow(()->new NotFoundException("Not Found"));
-        return x;
+        return propertyRepository.findById(id).orElseThrow(()->new NotFoundException("Not Found"));
     }
-
-    @CachePut(cacheNames = "Property's")
+    @CacheEvict(value = "Properties", allEntries = true)
     public Property createProperty(HttpServletRequest request, CreatePropertyRequest propertyRequest) throws InvalidJwtAuthenticationException {
         var token = jwtTokenUtil.resolveToken(request);
         if (jwtTokenUtil.validateToken(token)) {
@@ -87,8 +72,7 @@ public class PropertyService {
             }
         throw new InvalidJwtAuthenticationException("invalid jwt");
     }
-
-    @CachePut(cacheNames = "Property's")
+    @CachePut(cacheNames = "Properties", key = "#property.id")
     public Property updateProperty(HttpServletRequest request, Property property) throws InvalidJwtAuthenticationException, NotFoundException {
         var token = jwtTokenUtil.resolveToken(request);
         if (!jwtTokenUtil.validateToken(token)) {
@@ -103,7 +87,7 @@ public class PropertyService {
         p.setDescription((property.getDescription() != null)? property.getDescription():p.getDescription());
         return propertyRepository.save(p);
     }
-    @CacheEvict(cacheNames = "Property's")
+    @CacheEvict(cacheNames = "Properties", key = "#propertyId")
     public Property deleteProperty (HttpServletRequest request,Long propertyId) throws InvalidJwtAuthenticationException,NotFoundException{
         var token = jwtTokenUtil.resolveToken(request);
         if (!jwtTokenUtil.validateToken(token)) {
@@ -116,7 +100,7 @@ public class PropertyService {
         propertyRepository.delete(p);
         return p;
     }
-    @CacheEvict(cacheNames = "Property's")
+    @CachePut(cacheNames = "Properties", key = "#propertyId")
     public Property updatePropertyImage(HttpServletRequest request,List<MultipartFile> propertyImages,long propertyId) throws InvalidJwtAuthenticationException,NotFoundException {
         var token = jwtTokenUtil.resolveToken(request);
         if (!jwtTokenUtil.validateToken(token)) {
