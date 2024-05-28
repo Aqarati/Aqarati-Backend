@@ -138,4 +138,37 @@ public class PropertyService {
         image.setVr_url(imageUrl);
         return propertyImageRepositorty.save(image);
     }
+    public PropertyImage deactivatePropertyImageVr(Long imageId) throws NotFoundException {
+        var image =propertyImageRepositorty.findById(imageId).orElseThrow(()->new NotFoundException("property with that id not found"));
+        image.setVr(false);
+        int lastSlashIndex = image.getImgUrl().lastIndexOf('/');
+        String fileName = image.getImgUrl().substring(lastSlashIndex + 1);
+        String imageUrl="https://master.d10hk0k70g00y4.amplifyapp.com/"+image.getProperty().getId()+"/"+fileName;
+        image.setVr_url("");
+        return propertyImageRepositorty.save(image);
+    }
+    public  List<Property> getPropertiesById(List<Long>propertiesId){
+        return propertyRepository.findAllById(propertiesId);
+    }
+    public List<Property> getAllByUserId(HttpServletRequest request) throws InvalidJwtAuthenticationException {
+        var token = jwtTokenUtil.resolveToken(request);
+        if (jwtTokenUtil.validateToken(token)) {
+            return propertyRepository.findAllByUserId(jwtTokenUtil.getUserId(token));
+        }
+        throw new InvalidJwtAuthenticationException("invalid jwt");
+    }
+    @CacheEvict(value = "Properties", allEntries = true)
+    public PropertyImage deletePropertyImage (HttpServletRequest request,Long propertyImageId) throws InvalidJwtAuthenticationException,NotFoundException{
+        var token = jwtTokenUtil.resolveToken(request);
+        if (!jwtTokenUtil.validateToken(token)) {
+            throw new InvalidJwtAuthenticationException("invalid jwt");
+        }
+        var p =propertyImageRepositorty.findById(propertyImageId).orElseThrow(()-> new NotFoundException("property with that id not found"));
+        //Todo: check the user Authority
+//        if(!(jwtTokenUtil.getUserId(token).equals(p.getUserId()))){
+//            throw new NotFoundException("property does not belong to that user");
+//        }
+        propertyImageRepositorty.delete(p);
+        return p;
+    }
 }
