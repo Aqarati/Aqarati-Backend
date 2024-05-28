@@ -65,10 +65,10 @@ public class UserService {
                 throw new InvalidImageException("Only JPEG and PNG images are allowed");
             }
             var x = userRepository.findByEmail(userEmail).orElseThrow();
-//            var imageUrl =imageServiceClient.uploadImage(image,"profile-image",x.getId());
+            var imageUrl =imageServiceClient.uploadImage(image,"profile-image",x.getId());
             String ext= ".%s".formatted(image.getContentType().substring(6));
-            publisher.publishImageChunks(image,"profile-image",x.getId(),ext);
-            var imageUrl="https://aqarati-app.s3.me-south-1.amazonaws.com/"+"profile-image"+"/"+x.getId()+ext ;
+//            publisher.publishImageChunks(image,"profile-image",x.getId(),ext);
+//            var imageUrl="https://aqarati-app.s3.me-south-1.amazonaws.com/"+"profile-image"+"/"+x.getId()+ext ;
             x.setImageUrl(imageUrl);
             //Todo add a way to update image url
             return userRepository.save(x);

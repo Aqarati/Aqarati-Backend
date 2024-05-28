@@ -28,7 +28,7 @@ public class Consumer {
     private Map<String, List<byte[]>> imageChunksMap=new HashMap<>();
     private Map<String, List<SqsMessage>> imageSqsMessageMap=new HashMap<>();
 
-    @Scheduled(fixedDelay = 5000)
+//    @Scheduled(fixedDelay = 5000)
     public void consumeImageChunks() {
         log.info("running consumer");
         log.info("imageChunksMap {}",imageChunksMap.isEmpty());
