@@ -25,6 +25,10 @@ public class DocumentController {
     public List<Document> getUserDocument(HttpServletRequest request) throws InvalidJwtAuthenticationException {
         return documentService.getUserDocument(request);
     }
+    @GetMapping("/{id}")
+    public List<Document> getPropertyDocument(HttpServletRequest request,@PathVariable String id) throws InvalidJwtAuthenticationException {
+        return documentService.getPropertyDocument(request,id);
+    }
 
     @PostMapping({"/",""})
     public Document createDocument(HttpServletRequest request, @RequestParam(name = "image") MultipartFile documnetImage,@RequestParam("property-id")String propertyId) throws InvalidJwtAuthenticationException, NotFoundException,Exception {

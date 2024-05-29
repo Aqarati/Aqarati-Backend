@@ -58,6 +58,13 @@ public class DocumentService {
         }
         throw new InvalidJwtAuthenticationException("");
     }
+    public List<Document> getPropertyDocument(HttpServletRequest request,String id) throws InvalidJwtAuthenticationException {
+        var token = jwtTokenUtil.resolveToken(request);
+        if (jwtTokenUtil.validateToken(token)) {
+            return documentRepository.findAllByPropertyId(id);
+        }
+        throw new InvalidJwtAuthenticationException("");
+    }
 
     public Document updateDocument(HttpServletRequest request, MultipartFile documnetImage,String propertyId, String documentId) throws InvalidJwtAuthenticationException, NotFoundException {
         var token = jwtTokenUtil.resolveToken(request);

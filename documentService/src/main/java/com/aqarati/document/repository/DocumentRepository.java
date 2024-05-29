@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface DocumentRepository extends JpaRepository<Document,Long> {
     List<Document> findAllByUserId(String userID);
+    List<Document> findAllByPropertyId(String propertyID);
     List<Document> findAllByStatus(DocumentStatus documentStatus);
 }
