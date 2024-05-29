@@ -3,14 +3,14 @@ version: '3'
 services:
   eureka-server:
     hostname: eureka-server
-    image: ahmd66699/aqarati-service-discovery:v0.01
+    image: ahmd66699/aqarati-service-discovery:1.0.0
     ports:
       - "8761:8761"
     networks:
       - aqarati-network
   gateway:
     hostname: gateway
-    image: ahmd66699/aqarati-gateway:0.0.2-SNAPSHOT
+    image: ahmd66699/aqarati-gateway:1.0.0
     ports:
       - "8888:8888"
     networks:
@@ -23,19 +23,19 @@ services:
       - aqarati-network
 
   auth-service:
-    image: ahmd66699/aqarati-auth-service:0.0.2-SNAPSHOT
+    image: ahmd66699/aqarati-auth-service:1.0.0
     ports:
       - "0:8443"
     networks:
       - aqarati-network
   user-service:
-    image: ahmd66699/aqarati-user-service:0.0.4-SNAPSHOT
+    image: ahmd66699/aqarati-user-service:1.0.0
     ports:
       - "0:8444"
     networks:
       - aqarati-network
   property-service:
-    image: ahmd66699/aqarati-property-service:0.08-SNAPSHOT
+    image: ahmd66699/aqarati-property-service:1.0.0-SNAPSHOT
     ports:
       - "0:8666"
     networks:
@@ -44,13 +44,13 @@ services:
 #      - elasticsearch
       - redis
   document-service:
-    image: ahmd66699/aqarati-document-service:0.02-SNAPSHOT
+    image: ahmd66699/aqarati-document-service:1.0.0
     ports:
       - "0:8665"
     networks:
       - aqarati-network
   image-service:
-    image: ahmd66699/aqarati-image-service:0.0.2-SNAPSHOT
+    image: ahmd66699/aqarati-image-service:1.0.0
     ports:
       - "0:7654"
     networks:
