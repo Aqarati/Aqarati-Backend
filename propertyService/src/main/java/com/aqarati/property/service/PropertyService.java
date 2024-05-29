@@ -99,7 +99,8 @@ public class PropertyService {
         propertyRepository.delete(p);
         return p;
     }
-    @CachePut(cacheNames = "Properties", key = "#propertyId")
+//    @CachePut(cacheNames = "Properties", key = "#propertyId")
+    @CacheEvict(value = "Properties", allEntries = true)
     public Property updatePropertyImage(HttpServletRequest request,List<MultipartFile> propertyImages,long propertyId) throws InvalidJwtAuthenticationException,NotFoundException {
         var token = jwtTokenUtil.resolveToken(request);
         if (!jwtTokenUtil.validateToken(token)) {
