@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.ahmadah</groupId>
     <artifactId>imageService</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>image-service</name>
     <description>imageService</description>
     <properties>

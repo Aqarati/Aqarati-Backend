@@ -11,13 +11,13 @@
 	</parent>
 
 	<artifactId>ServiceDiscovery</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>service-discovery</name>
 	<description>ServiceDiscovery</description>
 	<properties>
 		<java.version>21</java.version>
 		<spring-cloud.version>2023.0.0</spring-cloud.version>
-		<jkube.generator.name>ahmd66699/aqarati-${project.name}:v0.01</jkube.generator.name>
+		<jkube.generator.name>ahmd66699/aqarati-${project.name}:${project.version}</jkube.generator.name>
 	</properties>
 	<dependencies>
 		<dependency>

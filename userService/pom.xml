@@ -9,7 +9,7 @@
 		<relativePath/>
 	</parent>
 	<artifactId>userService</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>user-service</name>
 	<description>user-service</description>
 	<properties>
