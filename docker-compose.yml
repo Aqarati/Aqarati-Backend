@@ -16,7 +16,7 @@ services:
     networks:
       - aqarati-network
   nginx-reverse-proxy:
-    image: ahmd66699/aqarati-nginx-reverse-proxy
+    image: ahmd66699/aqarati-nginx-reverse-proxy:0.1V-Docker
     ports:
       - "80:80"
     networks:
