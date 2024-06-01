@@ -8,6 +8,7 @@ services:
       - "8761:8761"
     networks:
       - aqarati-network
+
   gateway:
     hostname: gateway
     image: ahmd66699/aqarati-gateway:1.0.0
@@ -15,6 +16,7 @@ services:
       - "8888:8888"
     networks:
       - aqarati-network
+
   nginx-reverse-proxy:
     image: ahmd66699/aqarati-nginx-reverse-proxy:0.1V-Docker
     ports:
@@ -28,12 +30,22 @@ services:
       - "0:8443"
     networks:
       - aqarati-network
+    environment:
+      POSTGRESQL_DB_URL: jdbc:postgresql://postgres:5432/aqarati
+      POSTGRESQL_DB_USERNAME: user
+      POSTGRESQL_DB_PASSWORD: password
+
   user-service:
     image: ahmd66699/aqarati-user-service:1.0.0
     ports:
       - "0:8444"
     networks:
       - aqarati-network
+    environment:
+      POSTGRESQL_DB_URL: jdbc:postgresql://postgres:5432/aqarati
+      POSTGRESQL_DB_USERNAME: user
+      POSTGRESQL_DB_PASSWORD: password
+
   property-service:
     image: ahmd66699/aqarati-property-service:1.0.0-SNAPSHOT
     ports:
@@ -41,72 +53,55 @@ services:
     networks:
       - aqarati-network
     depends_on:
-#      - elasticsearch
       - redis
+      - postgres
+    environment:
+      POSTGRESQL_DB_URL: jdbc:postgresql://postgres:5432/aqarati
+      POSTGRESQL_DB_USERNAME: user
+      POSTGRESQL_DB_PASSWORD: password
+
   document-service:
     image: ahmd66699/aqarati-document-service:1.0.0
     ports:
       - "0:8665"
     networks:
       - aqarati-network
+    environment:
+      POSTGRESQL_DB_URL: jdbc:postgresql://postgres:5432/aqarati
+      POSTGRESQL_DB_USERNAME: user
+      POSTGRESQL_DB_PASSWORD: password
+
   image-service:
     image: ahmd66699/aqarati-image-service:1.0.0
     ports:
       - "0:7654"
     networks:
       - aqarati-network
-#  elasticsearch:
-#    image: elasticsearch:8.13.0
-#    container_name: elasticsearch
-#    ports:
-#      - "9200:9200"
-#      - "9300:9300"
-#    volumes:
-#      - elastic_data:/usr/share/elasticsearch/data/
-#      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-#    environment:
-#      - discovery.type=single-node
-#      - http.host=0.0.0.0
-#      - transport.host=0.0.0.0
-#      - xpack.security.enabled=false
-#      - cluster.name=elasticsearch
-#      - bootstrap.memory_lock=true
-#    networks:
-#      - aqarati-network
-#  logstash:
-#      image: logstash:8.13.0
-#      container_name: logstash
-#      ports:
-#        - "5044:5044"
-#        - "9600:9600"
-#      volumes:
-#        - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-#        - ./logstash.yml:/usr/share/logstash/config/logstash.yml
-#        - logstash_data:/usr/share/logstash/data
-#        - ./postgresql-42.7.3.jar:/usr/share/logstash/postgresql-42.7.3.jar
-#        - ./template.json:/usr/share/logstash/template.json
-#      networks:
-#        - aqarati-network
-#      depends_on:
-#        - elasticsearch
-#  kibana:
-#    image: kibana:8.13.0
-#    container_name: kibana
-#    ports:
-#      - "5601:5601"
-#    volumes:
-#      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
-#      - kibana_data:/usr/share/kibana/data
-#    networks:
-#      - aqarati-network
-#    depends_on:
-#      - elasticsearch
+    environment:
+      POSTGRESQL_DB_URL: jdbc:postgresql://postgres:5432/aqarati
+      POSTGRESQL_DB_USERNAME: user
+      POSTGRESQL_DB_PASSWORD: password
+
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: aqarati
+    ports:
+      - "5432:5432"
+    networks:
+      - aqarati-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   redis:
     image: redis:7.2.4-alpine
     ports:
       - "6379:6379"
     networks:
       - aqarati-network
+
 networks:
   aqarati-network:
     driver: bridge
@@ -115,3 +110,4 @@ volumes:
   elastic_data:
   logstash_data:
   kibana_data:
+  postgres_data:
