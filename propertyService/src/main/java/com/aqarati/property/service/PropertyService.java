@@ -39,19 +39,21 @@ public class PropertyService {
       var x= propertyRepository.findAll();
         System.out.println("\n \n ");
         System.out.println(x.toString());
-        return x;
+        return (List<Property>) x;
     }
     @Cacheable(value = "Properties")
     public List<Property> getAllSortedByCreatedTime(){
         var properties = propertyRepository.findAll();
-        properties.sort(Comparator.comparing(Property::getCreatedTime));
-        return properties;
+        properties=(List<Property>) properties;
+        ((List<Property>) properties).sort(Comparator.comparing(Property::getCreatedTime));
+        return (List<Property>) properties;
     }
     @Cacheable(value = "Properties")
     public List<Property> getAllSortedByPrice(){
         var properties = propertyRepository.findAll();
-        properties.sort(Comparator.comparing(Property::getPrice));
-        return properties;
+        properties=(List<Property>) properties;
+        ((List<Property>) properties).sort(Comparator.comparing(Property::getPrice));
+        return (List<Property>) properties;
     }
     @Cacheable(value = "Properties", key = "#id")
     public Property getPropertyById(Long id) throws NotFoundException{
@@ -151,7 +153,7 @@ public class PropertyService {
     }
 
     public  List<Property> getPropertiesById(List<Long>propertiesId){
-        return propertyRepository.findAllById(propertiesId);
+        return (List<Property>) propertyRepository.findAllById(propertiesId);
     }
     public List<Property> getAllByUserId(HttpServletRequest request) throws InvalidJwtAuthenticationException {
         var token = jwtTokenUtil.resolveToken(request);

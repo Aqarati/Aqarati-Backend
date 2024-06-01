@@ -70,7 +70,7 @@ public class PropertyController {
 
     @GetMapping("/image")
     public List<PropertyImage> GetPropertyImage(){
-        return propertyImageRepository.findAll();
+        return (List<PropertyImage>) propertyImageRepository.findAll();
     }
 
     @PutMapping("/image/active/{id}")

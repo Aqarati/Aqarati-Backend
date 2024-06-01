@@ -3,16 +3,17 @@ package com.aqarati.property.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-//import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
 import java.util.*;
 
 
-@Entity
-@Table(name = "property")
+//@Entity
+//@Table(name = "property")
 @Setter@Getter@Builder
 @AllArgsConstructor@NoArgsConstructor
+@RedisHash
 public class Property implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
