@@ -158,6 +158,7 @@ public class PropertyService {
     public List<Property> getAllByUserId(HttpServletRequest request) throws InvalidJwtAuthenticationException {
         var token = jwtTokenUtil.resolveToken(request);
         if (jwtTokenUtil.validateToken(token)) {
+            System.out.println("Find By iD :"+jwtTokenUtil.getUserId(token));
             return propertyRepository.findAllByUserId(jwtTokenUtil.getUserId(token));
         }
         throw new InvalidJwtAuthenticationException("invalid jwt");

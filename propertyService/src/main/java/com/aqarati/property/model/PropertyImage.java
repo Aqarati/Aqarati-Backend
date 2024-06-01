@@ -3,6 +3,7 @@ package com.aqarati.property.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Reference;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
@@ -25,7 +26,8 @@ public class PropertyImage implements Serializable {
     private String imgUrl;
 
     @JsonIgnore
-    @ManyToOne
+//    @ManyToOne
+    @Reference
     @JoinColumn(name = "property_id")
     private Property property;
 

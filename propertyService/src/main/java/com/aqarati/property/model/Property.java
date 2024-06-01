@@ -3,6 +3,7 @@ package com.aqarati.property.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Reference;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
@@ -37,7 +38,8 @@ public class Property implements Serializable {
     private String userId;
 
     @Builder.Default
-    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+//    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @Reference
     private List<PropertyImage> propertyImages = new ArrayList<>();
 
     @Column(name = "created_time")

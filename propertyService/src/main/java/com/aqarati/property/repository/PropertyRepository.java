@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface PropertyRepository extends CrudRepository<Property,Long> {
     List<Property> findAllByUserId(String userId);
+
     @Query("SELECT p FROM Property p WHERE p.name LIKE %:keyword% OR p.description LIKE %:keyword%")
     List<Property> searchByKeyword(@Param("keyword") String keyword);
 }
