@@ -84,6 +84,7 @@ public class PropertyService {
         p.setName((property.getName()!=null)? property.getName():p.getName());
         p.setPrice((property.getPrice() != null)? property.getPrice():p.getPrice());
         p.setDescription((property.getDescription() != null)? property.getDescription():p.getDescription());
+        p.setPropertyStatus((property.getPropertyStatus() != null)? property.getPropertyStatus():p.getPropertyStatus());
         return propertyRepository.save(p);
     }
     @CacheEvict(cacheNames = "Properties", key = "#propertyId")

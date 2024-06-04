@@ -39,9 +39,14 @@ public class Property implements Serializable {
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<PropertyImage> propertyImages = new ArrayList<>();
 
+
     @Column(name = "created_time")
     @JsonIgnore
     @Builder.Default
     private Date createdTime=new Date();
+
+    @Column(name="property_status")
+    @Builder.Default
+    private PropertyStatus propertyStatus=PropertyStatus.AVAILABLE;
 
 }
