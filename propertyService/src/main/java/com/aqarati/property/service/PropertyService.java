@@ -61,31 +61,55 @@ public class PropertyService {
     public Property createProperty(HttpServletRequest request, CreatePropertyRequest propertyRequest) throws InvalidJwtAuthenticationException {
         var token = jwtTokenUtil.resolveToken(request);
         if (jwtTokenUtil.validateToken(token)) {
-            var property= Property.builder().
-                    name(propertyRequest.getName()).
-                    description(propertyRequest.getDescription()).
-                    price(propertyRequest.getPrice()).
-                    userId(jwtTokenUtil.getUserId(token)).
-                    build();
+            var property = Property.builder()
+                    .name(propertyRequest.getName())
+                    .description(propertyRequest.getDescription())
+                    .price(propertyRequest.getPrice())
+                    .features(propertyRequest.getFeatures())
+                    .nearbyLocations(propertyRequest.getNearbyLocations())
+                    .province(propertyRequest.getProvince())
+                    .region(propertyRequest.getRegion())
+                    .numberOfRooms(propertyRequest.getNumberOfRooms())
+                    .numberOfBathrooms(propertyRequest.getNumberOfBathrooms())
+                    .buildingAge(propertyRequest.getBuildingAge())
+                    .floor(propertyRequest.getFloor())
+                    .propertyArea(propertyRequest.getPropertyArea())
+                    .userId(jwtTokenUtil.getUserId(token))
+                    .build();
             return propertyRepository.save(property);
             }
         throw new InvalidJwtAuthenticationException("invalid jwt");
     }
     @CachePut(cacheNames = "Properties", key = "#property.id")
-    public Property updateProperty(HttpServletRequest request, Property property) throws InvalidJwtAuthenticationException, NotFoundException {
+    public Property updateProperty(HttpServletRequest request, Property property)
+            throws InvalidJwtAuthenticationException, NotFoundException {
         var token = jwtTokenUtil.resolveToken(request);
         if (!jwtTokenUtil.validateToken(token)) {
-            throw new InvalidJwtAuthenticationException("invalid jwt");
+            throw new InvalidJwtAuthenticationException("Invalid JWT");
         }
-        var p =propertyRepository.findById(property.getId()).orElseThrow(()-> new NotFoundException("property with that id not found"));
-        if(!(jwtTokenUtil.getUserId(token).equals(p.getUserId()))){
-            throw new NotFoundException("property does not belong to that user");
+
+        var existingProperty = propertyRepository.findById(property.getId())
+                .orElseThrow(() -> new NotFoundException("Property with that ID not found"));
+
+        if (!jwtTokenUtil.getUserId(token).equals(existingProperty.getUserId())) {
+            throw new NotFoundException("Property does not belong to that user");
         }
-        p.setName((property.getName()!=null)? property.getName():p.getName());
-        p.setPrice((property.getPrice() != null)? property.getPrice():p.getPrice());
-        p.setDescription((property.getDescription() != null)? property.getDescription():p.getDescription());
-        p.setPropertyStatus((property.getPropertyStatus() != null)? property.getPropertyStatus():p.getPropertyStatus());
-        return propertyRepository.save(p);
+
+        existingProperty.setName(property.getName() != null ? property.getName() : existingProperty.getName());
+        existingProperty.setPrice(property.getPrice() != null ? property.getPrice() : existingProperty.getPrice());
+        existingProperty.setDescription(property.getDescription() != null ? property.getDescription() : existingProperty.getDescription());
+        existingProperty.setPropertyStatus(property.getPropertyStatus() != null ? property.getPropertyStatus() : existingProperty.getPropertyStatus());
+        existingProperty.setFeatures(property.getFeatures() != null ? property.getFeatures() : existingProperty.getFeatures());
+        existingProperty.setNearbyLocations(property.getNearbyLocations() != null ? property.getNearbyLocations() : existingProperty.getNearbyLocations());
+        existingProperty.setProvince(property.getProvince() != null ? property.getProvince() : existingProperty.getProvince());
+        existingProperty.setRegion(property.getRegion() != null ? property.getRegion() : existingProperty.getRegion());
+        existingProperty.setNumberOfRooms(property.getNumberOfRooms() != null ? property.getNumberOfRooms() : existingProperty.getNumberOfRooms());
+        existingProperty.setNumberOfBathrooms(property.getNumberOfBathrooms() != null ? property.getNumberOfBathrooms() : existingProperty.getNumberOfBathrooms());
+        existingProperty.setBuildingAge(property.getBuildingAge() != null ? property.getBuildingAge() : existingProperty.getBuildingAge());
+        existingProperty.setFloor(property.getFloor() != null ? property.getFloor() : existingProperty.getFloor());
+        existingProperty.setPropertyArea(property.getPropertyArea() != null ? property.getPropertyArea() : existingProperty.getPropertyArea());
+
+        return propertyRepository.save(existingProperty);
     }
     @CacheEvict(cacheNames = "Properties", key = "#propertyId")
     public Property deleteProperty (HttpServletRequest request,Long propertyId) throws InvalidJwtAuthenticationException,NotFoundException{

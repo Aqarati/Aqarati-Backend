@@ -3,11 +3,9 @@ package com.aqarati.property.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-//import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.io.Serializable;
 import java.util.*;
-
 
 @Entity
 @Table(name = "property")
@@ -31,22 +29,48 @@ public class Property implements Serializable {
     @Column(name = "verified", nullable = false)
     private boolean verified = false;
 
-
-    @Column(name = "user_id",nullable = false)
+    @Column(name = "user_id", nullable = false)
     private String userId;
 
     @Builder.Default
-    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PropertyImage> propertyImages = new ArrayList<>();
-
 
     @Column(name = "created_time")
     @JsonIgnore
     @Builder.Default
-    private Date createdTime=new Date();
+    private Date createdTime = new Date();
 
-    @Column(name="property_status")
+    @Column(name = "property_status")
     @Builder.Default
-    private PropertyStatus propertyStatus=PropertyStatus.AVAILABLE;
+    private PropertyStatus propertyStatus = PropertyStatus.AVAILABLE;
 
+    @ElementCollection
+    @Column(name = "selected_features")
+    private List<String> features = new ArrayList<>();
+
+    @ElementCollection
+    @Column(name = "selected_nearby_locations")
+    private List<String> nearbyLocations = new ArrayList<>();
+
+    @Column(name = "province")
+    private String province;
+
+    @Column(name = "region")
+    private String region;
+
+    @Column(name = "number_of_rooms")
+    private Integer numberOfRooms;
+
+    @Column(name = "number_of_bathrooms")
+    private Integer numberOfBathrooms;
+
+    @Column(name = "building_age")
+    private Integer buildingAge;
+
+    @Column(name = "floor")
+    private String floor;
+
+    @Column(name = "property_area")
+    private String propertyArea;
 }

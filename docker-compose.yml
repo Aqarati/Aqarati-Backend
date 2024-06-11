@@ -38,6 +38,10 @@ services:
     image: ahmd66699/aqarati-property-service:1.0.1-SNAPSHOT
     ports:
       - "0:8666"
+    environment:
+      POSTGRESQL_DB_URL: jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres
+      POSTGRESQL_DB_USERNAME: postgres.nqzyatmpyvwuroleqpyw
+      POSTGRESQL_DB_PASSWORD: =KBbc8+vnS!kQYx
     networks:
       - aqarati-network
     depends_on:
@@ -47,8 +51,10 @@ services:
     image: ahmd66699/aqarati-document-service:1.0.0
     ports:
       - "0:8665"
-    networks:
-      - aqarati-network
+    environment:
+      POSTGRESQL_DB_URL: jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres
+      POSTGRESQL_DB_USERNAME: postgres.nqzyatmpyvwuroleqpyw
+      POSTGRESQL_DB_PASSWORD: =KBbc8+vnS!kQYx
   image-service:
     image: ahmd66699/aqarati-image-service:1.0.0
     ports:
