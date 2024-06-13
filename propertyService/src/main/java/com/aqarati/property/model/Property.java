@@ -45,11 +45,11 @@ public class Property implements Serializable {
     @Builder.Default
     private PropertyStatus propertyStatus = PropertyStatus.AVAILABLE;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "selected_features")
     private List<String> features = new ArrayList<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "selected_nearby_locations")
     private List<String> nearbyLocations = new ArrayList<>();
 
