@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -15,29 +16,43 @@ import (
 )
 
 var db *sql.DB
+var upgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
 
 func main() {
 	fmt.Println("Starting server...")
+
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
 
-	// Initialize the database connection
+	// Initialize database connection
 	db, err = connectToPostgres()
 	if err != nil {
 		log.Fatalf("Error connecting to the database: %v", err)
 	}
 	defer db.Close()
 
+	// Register with Eureka
 	registerWithEureka()
 
-	http.HandleFunc("/v1/channels", createChannel)
-	http.HandleFunc("/v1/messages", sendMessage)
-	http.HandleFunc("/ws", wsEndpoint)
+	// Create router
+	r := mux.NewRouter()
 
-	fmt.Println("Server started at :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	// Define API routes
+	r.HandleFunc("/v1/channels", createChannel).Methods("POST")
+	r.HandleFunc("/v1/channels/{channel_id}/users", addUserToChannel).Methods("POST")
+	r.HandleFunc("/v1/messages", sendMessage).Methods("POST")
+	r.HandleFunc("/ws", wsEndpoint)
+
+	// Start HTTP server
+	port := ":8080"
+	fmt.Printf("Server started at %s\n", port)
+	log.Fatal(http.ListenAndServe(port, r))
 }
 
 func registerWithEureka() {
@@ -50,15 +65,15 @@ func registerWithEureka() {
 	})
 
 	client.Start()
-	http.HandleFunc("/v1/services", func(writer http.ResponseWriter, request *http.Request) {
-		// full applications from eureka server
-		apps := client.Applications
 
+	// Endpoint to retrieve registered services (optional)
+	http.HandleFunc("/v1/services", func(writer http.ResponseWriter, request *http.Request) {
+		apps := client.Applications
 		b, _ := json.Marshal(apps)
 		_, _ = writer.Write(b)
 	})
 
-	// Start the HTTP server
+	// Start the HTTP server for service registry
 	go func() {
 		if err := http.ListenAndServe(":10000", nil); err != nil {
 			fmt.Println(err)
@@ -101,16 +116,77 @@ func createChannel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Start a transaction
+	tx, err := db.Begin()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
 	// Insert channel into database
 	var channelID int
-	err := db.QueryRow("INSERT INTO channels (name) VALUES ($1) RETURNING id", body.Name).Scan(&channelID)
+	err = tx.QueryRow("INSERT INTO channels (name) VALUES ($1) RETURNING id", body.Name).Scan(&channelID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Add user to the channel
-	_, err = db.Exec("INSERT INTO channel_members (user_id, channel_id) VALUES ($1, $2)", body.UserID, channelID)
+	// Add the user to the channel
+	_, err = tx.Exec("INSERT INTO channel_members (user_id, channel_id) VALUES ($1, $2)", body.UserID, channelID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Return the channel ID or some identifier
+	response := struct {
+		ChannelID int `json:"channel_id"`
+	}{
+		ChannelID: channelID,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+	w.WriteHeader(http.StatusCreated)
+}
+
+func addUserToChannel(w http.ResponseWriter, r *http.Request) {
+	type RequestBody struct {
+		UserID int `json:"user_id"`
+	}
+
+	vars := mux.Vars(r)
+	channelID := vars["channel_id"]
+
+	var body RequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Start a transaction
+	tx, err := db.Begin()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	// Insert user into channel_members table
+	_, err = tx.Exec("INSERT INTO channel_members (user_id, channel_id) VALUES ($1, $2)", body.UserID, channelID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -144,12 +220,6 @@ func sendMessage(w http.ResponseWriter, r *http.Request) {
 }
 
 func wsEndpoint(w http.ResponseWriter, r *http.Request) {
-	upgrader := websocket.Upgrader{
-		CheckOrigin: func(r *http.Request) bool {
-			return true
-		},
-	}
-
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
@@ -162,7 +232,11 @@ func wsEndpoint(w http.ResponseWriter, r *http.Request) {
 func handleMessages(conn *websocket.Conn) {
 	defer conn.Close()
 	for {
-		var msg Message
+		var msg struct {
+			ChannelID int    `json:"channel_id"`
+			UserID    int    `json:"user_id"`
+			Content   string `json:"content"`
+		}
 		err := conn.ReadJSON(&msg)
 		if err != nil {
 			log.Println("Error reading json.", err)
@@ -172,22 +246,10 @@ func handleMessages(conn *websocket.Conn) {
 	}
 }
 
-type Message struct {
+func broadcastMessage(msg struct {
 	ChannelID int    `json:"channel_id"`
 	UserID    int    `json:"user_id"`
 	Content   string `json:"content"`
-}
+}) {
 
-var clients = make(map[*websocket.Conn]bool)
-var broadcast = make(chan Message)
-
-func broadcastMessage(msg Message) {
-	for client := range clients {
-		err := client.WriteJSON(msg)
-		if err != nil {
-			log.Printf("websocket error: %v", err)
-			client.Close()
-			delete(clients, client)
-		}
-	}
 }
