@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -44,8 +46,10 @@ func main() {
 	r := mux.NewRouter()
 
 	// Define API routes
+	r.HandleFunc("/v1/channels/{channel_id}/messages", getMessagesByChannel).Methods("GET")
 	r.HandleFunc("/v1/channels", createChannel).Methods("POST")
 	r.HandleFunc("/v1/channels/{channel_id}/users", addUserToChannel).Methods("POST")
+	r.HandleFunc("/v1/channels/{channel_id}/users/{user_id}", removeUserFromChannel).Methods("DELETE")
 	r.HandleFunc("/v1/messages", sendMessage).Methods("POST")
 	r.HandleFunc("/ws", wsEndpoint)
 
@@ -107,7 +111,7 @@ func connectToPostgres() (*sql.DB, error) {
 func createChannel(w http.ResponseWriter, r *http.Request) {
 	type RequestBody struct {
 		Name   string `json:"name"`
-		UserID int    `json:"user_id"`
+		UserID string `json:"user_id"`
 	}
 
 	var body RequestBody
@@ -128,7 +132,26 @@ func createChannel(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		err = tx.Commit()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}()
+
+	// Check if user exists
+	var userExists bool
+	err = tx.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE id=$1)", body.UserID).Scan(&userExists)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Create user if they do not exist
+	if !userExists {
+		if err := createUser(body.UserID); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
 
 	// Insert channel into database
 	var channelID int
@@ -153,21 +176,59 @@ func createChannel(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(response)
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(response)
 }
 
 func addUserToChannel(w http.ResponseWriter, r *http.Request) {
 	type RequestBody struct {
-		UserID int `json:"user_id"`
+		UserID    string `json:"user_id"`
+		ChannelID int    `json:"channel_id"`
 	}
-
-	vars := mux.Vars(r)
-	channelID := vars["channel_id"]
 
 	var body RequestBody
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Check if user exists
+	var userID string
+	err := db.QueryRow("SELECT id FROM users WHERE id = $1", body.UserID).Scan(&userID)
+	switch {
+	case err == sql.ErrNoRows:
+		// User does not exist, create the user
+		err = createUser(body.UserID)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		userID = body.UserID // Assign userID for further processing
+	case err != nil:
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Now userID should be valid, proceed with adding user to channel_members
+	_, err = db.Exec("INSERT INTO channel_members (user_id, channel_id) VALUES ($1, $2)", userID, body.ChannelID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+}
+
+func removeUserFromChannel(w http.ResponseWriter, r *http.Request) {
+	// Parse channel_id and user_id from URL parameters
+	vars := mux.Vars(r)
+	channelID := vars["channel_id"]
+	userID := vars["user_id"]
+
+	// Convert channelID to integer
+	channelIDInt, err := strconv.Atoi(channelID)
+	if err != nil {
+		http.Error(w, "Invalid channel ID", http.StatusBadRequest)
 		return
 	}
 
@@ -185,20 +246,29 @@ func addUserToChannel(w http.ResponseWriter, r *http.Request) {
 		err = tx.Commit()
 	}()
 
-	// Insert user into channel_members table
-	_, err = tx.Exec("INSERT INTO channel_members (user_id, channel_id) VALUES ($1, $2)", body.UserID, channelID)
+	// Delete the user from channel_members
+	_, err = tx.Exec("DELETE FROM channel_members WHERE user_id = $1 AND channel_id = $2", userID, channelIDInt)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusNoContent) // StatusNoContent (204) indicates successful deletion
+}
+
+func createUser(userID string) error {
+	// You may have additional fields to create the user, adapt as needed
+	_, err := db.Exec("INSERT INTO users (id) VALUES ($1)", userID)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func sendMessage(w http.ResponseWriter, r *http.Request) {
 	type RequestBody struct {
 		ChannelID int    `json:"channel_id"`
-		UserID    int    `json:"user_id"`
+		UserID    string `json:"user_id"`
 		Content   string `json:"content"`
 	}
 
@@ -234,7 +304,7 @@ func handleMessages(conn *websocket.Conn) {
 	for {
 		var msg struct {
 			ChannelID int    `json:"channel_id"`
-			UserID    int    `json:"user_id"`
+			UserID    string `json:"user_id"`
 			Content   string `json:"content"`
 		}
 		err := conn.ReadJSON(&msg)
@@ -248,8 +318,75 @@ func handleMessages(conn *websocket.Conn) {
 
 func broadcastMessage(msg struct {
 	ChannelID int    `json:"channel_id"`
-	UserID    int    `json:"user_id"`
+	UserID    string `json:"user_id"`
 	Content   string `json:"content"`
 }) {
 
+}
+
+func getMessagesByChannel(w http.ResponseWriter, r *http.Request) {
+	log.Println("getting messages")
+	// Extract channel_id from URL parameters
+	vars := mux.Vars(r)
+	channelID := vars["channel_id"]
+
+	// Convert channelID to integer
+	channelIDInt, err := strconv.Atoi(channelID)
+	if err != nil {
+		http.Error(w, "Invalid channel ID", http.StatusBadRequest)
+		return
+	}
+
+	// Query messages from the database for the specified channel
+	rows, err := db.Query("SELECT id, user_id, content, created_at FROM messages WHERE channel_id = $1", channelIDInt)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	// Prepare a slice to hold the messages
+	var messages []struct {
+		ID        int       `json:"id"`
+		UserID    string    `json:"user_id"`
+		Content   string    `json:"content"`
+		CreatedAt time.Time `json:"created_at"`
+	}
+
+	// Iterate through the query results and populate the messages slice
+	for rows.Next() {
+		var msg struct {
+			ID        int
+			UserID    string
+			Content   string
+			CreatedAt time.Time
+		}
+		if err := rows.Scan(&msg.ID, &msg.UserID, &msg.Content, &msg.CreatedAt); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Append msg to messages slice
+		messages = append(messages, struct {
+			ID        int       `json:"id"`
+			UserID    string    `json:"user_id"`
+			Content   string    `json:"content"`
+			CreatedAt time.Time `json:"created_at"`
+		}{
+			ID:        msg.ID,
+			UserID:    msg.UserID,
+			Content:   msg.Content,
+			CreatedAt: msg.CreatedAt,
+		})
+	}
+
+	// Check for any errors encountered during iteration
+	if err := rows.Err(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Respond with the JSON array of messages
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(messages)
 }
