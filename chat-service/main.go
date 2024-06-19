@@ -110,8 +110,83 @@ func connectToPostgres() (*sql.DB, error) {
 
 func createChannel(w http.ResponseWriter, r *http.Request) {
 	type RequestBody struct {
-		Name   string `json:"name"`
-		UserID string `json:"user_id"`
+		Name    string   `json:"name"`
+		UserIDs []string `json:"user_ids"`
+	}
+
+	var body RequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// Start a transaction
+	tx, err := db.Begin()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}()
+
+	// Insert channel into database
+	var channelID int
+	err = tx.QueryRow("INSERT INTO channels (name) VALUES ($1) RETURNING id", body.Name).Scan(&channelID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Add the users to the channel
+	for _, userID := range body.UserIDs {
+		// Check if user exists
+		var userExists bool
+		err = tx.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE id=$1)", userID).Scan(&userExists)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Create user if they do not exist
+		if !userExists {
+			if err := createUser(tx, userID); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		}
+
+		// Add user to channel
+		_, err = tx.Exec("INSERT INTO channel_members (user_id, channel_id) VALUES ($1, $2)", userID, channelID)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	// Return the channel ID or some identifier
+	response := struct {
+		ChannelID int `json:"channel_id"`
+	}{
+		ChannelID: channelID,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(response)
+}
+
+func addUserToChannel(w http.ResponseWriter, r *http.Request) {
+	type RequestBody struct {
+		UserID    string `json:"user_id"`
+		ChannelID int    `json:"channel_id"`
 	}
 
 	var body RequestBody
@@ -147,70 +222,15 @@ func createChannel(w http.ResponseWriter, r *http.Request) {
 
 	// Create user if they do not exist
 	if !userExists {
-		if err := createUser(body.UserID); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	}
-
-	// Insert channel into database
-	var channelID int
-	err = tx.QueryRow("INSERT INTO channels (name) VALUES ($1) RETURNING id", body.Name).Scan(&channelID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Add the user to the channel
-	_, err = tx.Exec("INSERT INTO channel_members (user_id, channel_id) VALUES ($1, $2)", body.UserID, channelID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Return the channel ID or some identifier
-	response := struct {
-		ChannelID int `json:"channel_id"`
-	}{
-		ChannelID: channelID,
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(response)
-}
-
-func addUserToChannel(w http.ResponseWriter, r *http.Request) {
-	type RequestBody struct {
-		UserID    string `json:"user_id"`
-		ChannelID int    `json:"channel_id"`
-	}
-
-	var body RequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	// Check if user exists
-	var userID string
-	err := db.QueryRow("SELECT id FROM users WHERE id = $1", body.UserID).Scan(&userID)
-	switch {
-	case err == sql.ErrNoRows:
-		// User does not exist, create the user
-		err = createUser(body.UserID)
+		err = createUser(tx, body.UserID)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		userID = body.UserID // Assign userID for further processing
-	case err != nil:
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
 	}
 
 	// Now userID should be valid, proceed with adding user to channel_members
-	_, err = db.Exec("INSERT INTO channel_members (user_id, channel_id) VALUES ($1, $2)", userID, body.ChannelID)
+	_, err = tx.Exec("INSERT INTO channel_members (user_id, channel_id) VALUES ($1, $2)", body.UserID, body.ChannelID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -244,6 +264,9 @@ func removeUserFromChannel(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		err = tx.Commit()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}()
 
 	// Delete the user from channel_members
@@ -256,9 +279,9 @@ func removeUserFromChannel(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent) // StatusNoContent (204) indicates successful deletion
 }
 
-func createUser(userID string) error {
+func createUser(tx *sql.Tx, userID string) error {
 	// You may have additional fields to create the user, adapt as needed
-	_, err := db.Exec("INSERT INTO users (id) VALUES ($1)", userID)
+	_, err := tx.Exec("INSERT INTO users (id) VALUES ($1)", userID)
 	if err != nil {
 		return err
 	}
