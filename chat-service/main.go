@@ -62,7 +62,7 @@ func main() {
 
 func registerWithEureka() {
 	client := eureka.NewClient(&eureka.Config{
-		DefaultZone:           "http://eureka-server:8761/eureka",
+		DefaultZone:           "http://eureka-server:8761/eureka/",
 		App:                   "chat-service",
 		Port:                  8080,
 		RenewalIntervalInSecs: 30,

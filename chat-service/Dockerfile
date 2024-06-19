@@ -1,5 +1,5 @@
 # Start with a base Go image
-FROM golang:1.17-alpine as builder
+FROM golang:1.21.0-alpine as builder
 
 # Set necessary environment variables needed for our image
 ENV GO111MODULE=on \
@@ -33,11 +33,13 @@ RUN apk update && apk add --no-cache ca-certificates
 # Copy the Pre-built binary file from the previous stage
 COPY --from=builder /build/main /app/
 
-# Copy the .env file to the container
-COPY .env /app/
+# Copy the .env file to the container (assuming it's in the same directory as Dockerfile)
+COPY .env /app/.env
+COPY .env .env
+COPY .env .
 
 # Expose port 8080 to the outside world
 EXPOSE 8080
 
 # Command to run the executable
-CMD ["./app/main"]
+CMD ["/app/main"]
