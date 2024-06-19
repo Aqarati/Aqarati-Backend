@@ -52,6 +52,7 @@ func main() {
 	r.HandleFunc("/v1/channels/{channel_id}/users/{user_id}", removeUserFromChannel).Methods("DELETE")
 	r.HandleFunc("/v1/messages", sendMessage).Methods("POST")
 	r.HandleFunc("/ws", wsEndpoint)
+	r.HandleFunc("/v1/users/{user_id}/channels", getUserChannels).Methods("GET")
 
 	// Start HTTP server
 	port := ":8080"
@@ -61,7 +62,7 @@ func main() {
 
 func registerWithEureka() {
 	client := eureka.NewClient(&eureka.Config{
-		DefaultZone:           "http://localhost:8761/eureka/",
+		DefaultZone:           "http://eureka-server:8761/eureka",
 		App:                   "chat-service",
 		Port:                  8080,
 		RenewalIntervalInSecs: 30,
@@ -412,4 +413,59 @@ func getMessagesByChannel(w http.ResponseWriter, r *http.Request) {
 	// Respond with the JSON array of messages
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(messages)
+}
+
+func getUserChannels(w http.ResponseWriter, r *http.Request) {
+	// Extract user_id from URL parameters
+	vars := mux.Vars(r)
+	userID := vars["user_id"]
+
+	// Query channels from the database for the specified user
+	rows, err := db.Query(`
+		SELECT c.id, c.name, c
+		FROM channels c
+		INNER JOIN channel_members cm ON c.id = cm.channel_id
+		WHERE cm.user_id = $1`, userID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	// Prepare a slice to hold the channels
+	var channels []struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+	}
+
+	// Iterate through the query results and populate the channels slice
+	for rows.Next() {
+		var channel struct {
+			ID   int
+			Name string
+		}
+		if err := rows.Scan(&channel.ID, &channel.Name); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Append channel to channels slice
+		channels = append(channels, struct {
+			ID   int    `json:"id"`
+			Name string `json:"name"`
+		}{
+			ID:   channel.ID,
+			Name: channel.Name,
+		})
+	}
+
+	// Check for any errors encountered during iteration
+	if err := rows.Err(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Respond with the JSON array of channels
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(channels)
 }
