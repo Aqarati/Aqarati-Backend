@@ -10,7 +10,7 @@ services:
       - aqarati-network
   gateway:
     hostname: gateway
-    image: ahmd66699/aqarati-gateway:1.0.0
+    image: ahmd66699/aqarati-gateway:1.0.1
     ports:
       - "8888:8888"
     networks:
@@ -29,7 +29,7 @@ services:
     networks:
       - aqarati-network
   user-service:
-    image: ahmd66699/aqarati-user-service:1.0.0
+    image: ahmd66699/aqarati-user-service:1.0.1
     ports:
       - "0:8444"
     networks:
