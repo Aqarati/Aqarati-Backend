@@ -112,4 +112,10 @@ public class UserService {
         }
         throw new InvalidJwtAuthenticationException("invalid JWT ");
     }
+
+    //Todo:Security issue
+    public List<UserApp> getAllUserForChat(){
+        return userRepository.findAll();
+    }
+
 }

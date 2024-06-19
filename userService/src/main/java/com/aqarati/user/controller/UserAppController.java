@@ -46,5 +46,10 @@ public class UserAppController {
     public UserApp updateUserImage(HttpServletRequest request, @RequestParam("profile-image")MultipartFile image) throws InvalidJwtAuthenticationException, InvalidImageException {
         return userService.updateUserImage(request,image);
     }
+    @GetMapping("/chat/user")
+    public List<UserApp> getAllUserChat()  {
+        return userService.getAllUserForChat();
+    }
+
 }
 
