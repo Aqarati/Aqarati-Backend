@@ -55,6 +55,12 @@ services:
       - "0:7654"
     networks:
       - aqarati-network
+  chat-service:
+    image: ahmd66699/aqarati-chat-service:1.0.0
+    ports:
+      - "8080:8080"
+    networks:
+      - aqarati-network
 #  elasticsearch:
 #    image: elasticsearch:8.13.0
 #    container_name: elasticsearch
